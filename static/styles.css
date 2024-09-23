@@ -1,6 +1,8 @@
 body {
     display: flex;
     justify-content: center;
+    align-items: center;  
+    flex-direction: column; 
     background-color: lavenderblush;
     color: slateblue;
 }
@@ -20,4 +22,12 @@ table {
 td {
     border: 1px solid #dad3f6;
     text-align: center;
+}
+
+p {
+    max-width: 600px; 
+    margin: 0 auto; 
+    line-height: 1.6;
+    text-align: justify; 
+    padding: 10px 0; 
 }

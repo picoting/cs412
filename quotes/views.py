@@ -28,3 +28,21 @@ def home(request):
     #time = time.ctime()
 
     return render(request, 'quotes/home.html', {'quote': random_quote, 'image': random_image, 'current_time': time.ctime()})
+
+def show_all(request):
+    quote_image_pairs = zip(quotes, images)
+    return render(request, 'quotes/show_all.html', {'quote_image_pairs': quote_image_pairs, 'current_time': time.ctime()})
+
+def about(request):
+    person_info = {
+        "name": "Richard Siken",
+        "biography": """
+        Richard Siken is an American poet, painter, and filmmaker. His poetry collection "Crush" won the 2004 Yale Series of Younger Poets competition, 
+        and his work explores themes of love, obsession, and loss. His poems are known for their raw intensity and emotional depth.
+        """
+    }
+    creator_info = {
+        "name": "Ting Liu",
+        "note": "Richard Siken is my favorite poet! I wanted to share some of his work with everyone :)"
+    }
+    return render(request, 'quotes/about.html', {'person_info': person_info, 'creator_info': creator_info, 'current_time': time.ctime()})
