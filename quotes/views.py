@@ -29,6 +29,18 @@ def home(request):
 
     return render(request, 'quotes/home.html', {'quote': random_quote, 'image': random_image, 'current_time': time.ctime()})
 
+def quote(request):
+    #select random quote
+    random_quote = random.choice(quotes)
+
+    #select random image
+    random_image = random.choice(images)
+
+
+    #time = time.ctime()
+
+    return render(request, 'quotes/home.html', {'quote': random_quote, 'image': random_image, 'current_time': time.ctime()})
+
 def show_all(request):
     quote_image_pairs = zip(quotes, images)
     return render(request, 'quotes/show_all.html', {'quote_image_pairs': quote_image_pairs, 'current_time': time.ctime()})
