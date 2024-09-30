@@ -1,0 +1,18 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+    <div class="info-section">
+        <p><strong>Address:</strong> {{ restaurant_info.address }}</p>
+        <p>{{ restaurant_info.description }}</p>
+    </div>
+
+    <div class="hours-section">
+        <h2>hours</h2>
+        <ul class="hours-list">
+            <li><strong>brunch:</strong> {{ restaurant_info.brunch }}</li>
+            <li><strong>lunch:</strong> {{ restaurant_info.lunch }}</li>
+            <li><strong>dinner:</strong> {{ restaurant_info.din }}</li>
+        </ul>
+    </div>
+
+{% endblock %}

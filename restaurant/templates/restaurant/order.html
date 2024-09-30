@@ -1,0 +1,54 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+    <h1>order with us!</h1>
+
+    <form action="{% url 'confirmation' %}" method="POST">
+        {% csrf_token %}
+
+        <h2>menu</h2>
+        <ul>
+            {% for item in menu_items %}
+                <li>
+                    <input type="checkbox" name="items" value="{{ item.name }}">
+                    <strong>{{ item.name }}</strong> - {{ item.price }}<br>
+                    {{ item.description }}
+                    
+                    {% if item.options %}
+                        <br>
+                        <label for="options_{{ item.name }}">Options:</label>
+                        <select name="options_{{ item.name }}" id="options_{{ item.name }}">
+                            {% for option in item.options %}
+                                <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </li>
+                <br>
+            {% endfor %}
+        </ul>
+
+        <h2>daily special</h2>
+        <p>
+            <strong>{{ daily_special.name }}</strong> - {{ daily_special.price }}<br>
+            {{ daily_special.description }}
+        </p>
+        <input type="checkbox" name="daily_special" value="{{ daily_special.name }}"> add our daily special!
+
+        <h2>special instructions</h2>
+        <textarea name="instructions" placeholder="Any special requests or instructions?" rows="4" cols="50"></textarea>
+
+        <h2>customer information</h2>
+        <label for="name">name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="phone">phone:</label>
+        <input type="tel" id="phone" name="phone" required>
+
+        <label for="email">email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <br><br>
+        <input type="submit" value="Place Order">
+    </form>
+{% endblock %}

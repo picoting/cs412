@@ -1,0 +1,32 @@
+<!-- formdata/templates/formdata/base.html 
+ A template with common HTML code that will be re-used by 
+ all of the other templates.
+ -->
+
+ {% load static %}
+<html>
+    <head>
+        <title>welcome to gufo!</title>
+        <!-- <link rel="stylesheet" href="/static/styles.css"> -->
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+    </head>
+
+
+    <body>
+        <nav>
+            <ul>
+                <li><a href="{% url 'main' %}">about us</a></li>
+                <li><a href="{% url 'order' %}">order!</a></li>
+            </ul>
+        </nav>
+
+        <div class="content-container">
+            <h1>gufo</h1>
+            {% block content %}
+            <!-- fill in this section with specific page detail -->
+            {% endblock %}
+        </div>
+
+        
+    </body>
+</html>
