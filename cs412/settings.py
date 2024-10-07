@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'quotes',
-    'restaurant'
+    'restaurant',
+    'mini_fb'
 ]
 
 MIDDLEWARE = [

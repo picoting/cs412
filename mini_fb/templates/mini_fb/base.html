@@ -1,0 +1,19 @@
+{% load static %}
+<html>
+    <head>
+        <title>Our Blog</title>
+        <link rel="stylesheet" href="{% static 'styles-blog.css' %}">
+    </head>
+
+    <body>
+        <nav>
+            <ul></ul>
+            </ul>
+        </nav>
+
+        {% block content %}
+        <!-- fill in this section with specific page detail -->
+        {% endblock %}
+
+    </body>
+</html>
