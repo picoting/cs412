@@ -6,10 +6,15 @@
     </head>
 
     <body>
-        <nav>
-            <ul></ul>
-            </ul>
-        </nav>
+        <header>
+            <h1>Welcome to Mini Facebook!</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'show_all_profiles' %}">View All Profiles</a></li>
+                    <li><a href="{% url 'create_profile' %}">Create New Profile</a></li>
+                </ul>
+            </nav>
+        </header>
 
         {% block content %}
         <!-- fill in this section with specific page detail -->

@@ -1,0 +1,13 @@
+{% extends 'mini_fb/base.html' %}
+
+{% block title %}Create New Profile{% endblock %}
+
+{% block content %}
+    <h2>Create a New Profile</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Renders the form fields with labels -->
+        <button type="submit">Create Profile</button>
+    </form>
+{% endblock %}
