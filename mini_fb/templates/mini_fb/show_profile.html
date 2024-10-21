@@ -31,9 +31,19 @@
     <h3>Status Messages</h3>
     <ul>
         {% for status in profile.get_status_messages %}
-        <li>
-            <strong>{{ status.timestamp|date:"F j, Y, g:i a" }}:</strong> {{ status.message }}
-        </li>
+        <div class="status-message">
+            <p><strong>Message:</strong> {{ status.message }}</p>
+            <p><strong>Posted on:</strong> {{ status.timestamp }}</p>
+
+            <!-- Check if the status has any images -->
+            {% if status.get_images %}
+                <div class="status-images">
+                    {% for img in status.get_images %}
+                        <img src="{{ img.image.url }}" alt="Image for status" style="max-width: 300px;">
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
         {% empty %}
         <p>No status messages found.</p>
         {% endfor %}

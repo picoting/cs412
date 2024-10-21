@@ -5,9 +5,13 @@
 {% block content %}
     <h2>Post a New Status for {{ profile.first_name }}</h2>
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
+
+        <!-- add file upload -->
+        <input type="file" name="files" multiple />
+
         <button type="submit">Post Status</button>
     </form>
 {% endblock %}

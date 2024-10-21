@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 
 class Profile(models.Model):
     first_name = models.CharField(max_length=30)
@@ -17,9 +18,24 @@ class Profile(models.Model):
 
 
 class StatusMessage(models.Model):
+    #new StatusMessage model that stores the message, timestamp, and relates it to a user profile.
     message = models.TextField()
     timestamp = models.DateTimeField(default=timezone.now)
     profile = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='status_messages')
 
     def __str__(self):
         return f"{self.profile.first_name} at {self.timestamp}: {self.message}"
+
+    def get_images(self):
+        # return all the images related to the status message
+        return Image.objects.filter(status_message=self)
+
+
+class Image(models.Model):
+    #new image model that stores each image, relates it to a StatusMessage, and timestamp
+    status_message = models.ForeignKey(StatusMessage, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='status_images/')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image for {self.status_message.message} uploaded on {self.timestamp}"
