@@ -18,3 +18,18 @@ class CreateStatusMessageForm(forms.ModelForm):
     class Meta:
         model = StatusMessage
         fields = ['message']
+
+
+class UpdateProfileForm(forms.ModelForm):
+    #new form to update an existing profile
+    class Meta:
+        #do not include updating name
+        model = Profile
+        fields = ['city', 'email', 'profile_image_url']
+
+    # update meta info
+    def __init__(self, *args, **kwargs):
+        super(UpdateProfileForm, self).__init__(*args, **kwargs)
+        self.fields['city'].label = "City"
+        self.fields['email'].label = "Email Address"
+        self.fields['profile_image'].label = "Profile Image URL"

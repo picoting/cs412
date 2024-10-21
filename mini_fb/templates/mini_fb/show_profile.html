@@ -51,4 +51,8 @@
 
     <h3>Post a New Status</h3>
     <a href="{% url 'create_status' profile.pk %}">Post a Status</a>
+
+    <h3>Update Profile</h3>
+    <a href="{% url 'update_profile' pk=profile.pk %}">Update Profile</a>
+
 {% endblock %}
