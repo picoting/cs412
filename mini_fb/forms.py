@@ -26,6 +26,7 @@ class UpdateProfileForm(forms.ModelForm):
         #do not include updating name
         model = Profile
         fields = ['city', 'email', 'profile_image_url']
+        
 
     # update meta info
     def __init__(self, *args, **kwargs):

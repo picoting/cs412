@@ -35,7 +35,7 @@
             <p><strong>Message:</strong> {{ status.message }}</p>
             <p><strong>Posted on:</strong> {{ status.timestamp }}</p>
 
-            <!-- Check if the status has any images -->
+            <!-- load in images if theyre there -->
             {% if status.get_images %}
                 <div class="status-images">
                     {% for img in status.get_images %}
@@ -43,6 +43,10 @@
                     {% endfor %}
                 </div>
             {% endif %}
+
+            <a href="{% url 'update_status' status.pk %}">Update</a>
+            <a href="{% url 'delete_status' status.pk %}">Delete</a>
+
         </div>
         {% empty %}
         <p>No status messages found.</p>

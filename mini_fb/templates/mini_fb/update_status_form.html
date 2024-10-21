@@ -1,0 +1,15 @@
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+  <h1>Update Status</h1>
+
+  <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Update Status</button>
+  </form>
+
+  <form method="GET" action="{% url 'show_profile' object.profile.pk %}">
+      <button type="submit">Cancel</button>
+  </form>
+{% endblock %}

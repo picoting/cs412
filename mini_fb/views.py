@@ -5,6 +5,7 @@ from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import CreateView
 from django.views.generic import UpdateView
+from django.views.generic import DeleteView
 
 from .models import *
 from .forms import *
@@ -52,7 +53,10 @@ class CreateStatusMessageView(CreateView):
         #profile = get_object_or_404(Profile, pk=self.kwargs['pk'])
         #form.instance.profile = profile
 
-        sm = form.save()
+        profile = Profile.objects.get(pk=self.kwargs['pk'])
+        status_message = form.save(commit=False)
+        status_message.profile = profile
+        status_message.save() 
 
         # get all uploaded files
         files = self.request.FILES.getlist('files')
@@ -77,3 +81,23 @@ class UpdateProfileView(UpdateView):
     # dedirect to profile page after updating
     def get_success_url(self):
         return reverse('show_profile', kwargs={'pk': self.object.pk})
+
+
+class DeleteStatusMessageView(DeleteView):
+    model = StatusMessage
+    template_name = 'mini_fb/delete_status_form.html'
+    context_object_name = 'status_message'
+
+    #redirect to profile after deleting status
+    def get_success_url(self):
+        return reverse('show_profile', kwargs={'pk': self.object.profile.pk})
+    
+
+class UpdateStatusMessageView(UpdateView):
+    model = StatusMessage
+    fields = ['message']  # you can only update the text
+    template_name = 'mini_fb/update_status_form.html'
+
+     #redirect to profile after updating status
+    def get_success_url(self):
+        return reverse('show_profile', kwargs={'pk': self.object.profile.pk})

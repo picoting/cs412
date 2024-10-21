@@ -12,7 +12,6 @@ urlpatterns = [
     path('create_profile/', CreateProfileView.as_view(), name='create_profile'),
     path('profile/<int:pk>/create_status/', CreateStatusMessageView.as_view(), name='create_status'),
     path('profile/<int:pk>/update/', UpdateProfileView.as_view(), name='update_profile'),
-    #path(r'about', views.about, name="about"),
-    #path(r'quote', views.quote, name="quote"),
-    #path(r'show_all', views.show_all, name="show_all"),   
+    path('status/<int:pk>/delete/', DeleteStatusMessageView.as_view(), name='delete_status'),
+    path('status/<int:pk>/update/', UpdateStatusMessageView.as_view(), name='update_status'),
 ]
