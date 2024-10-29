@@ -1,0 +1,16 @@
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+  <h1>Friend Suggestions for {{ profile.first_name }} {{ profile.last_name }}</h1>
+  <ul>
+    {% for suggestion in friend_suggestions %}
+      <li>
+        {{ suggestion.first_name }} {{ suggestion.last_name }}
+        <a href="{% url 'add_friend' profile.pk suggestion.pk %}">Add Friend</a>
+      </li>
+    {% empty %}
+      <li>No friend suggestions available.</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'show_profile' profile.pk %}">Back to Profile</a>
+{% endblock %}

@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
+from django.views import View
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import CreateView
@@ -101,3 +102,22 @@ class UpdateStatusMessageView(UpdateView):
      #redirect to profile after updating status
     def get_success_url(self):
         return reverse('show_profile', kwargs={'pk': self.object.profile.pk})
+    
+
+class CreateFriendView(View):
+    #view to create the friend relationship
+    def dispatch(self, request, *args, **kwargs):
+        profile = get_object_or_404(Profile, pk=self.kwargs['pk'])
+        other = get_object_or_404(Profile, pk=self.kwargs['other_pk'])
+        profile.add_friend(other)
+        return redirect('show_profile', pk=profile.pk)
+    
+class ShowFriendSuggestionsView(DetailView):
+    model = Profile
+    template_name = 'mini_fb/friend_suggestions.html'
+    context_object_name = 'profile'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['friend_suggestions'] = self.object.get_friend_suggestions()
+        return context

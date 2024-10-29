@@ -9,12 +9,45 @@ class Profile(models.Model):
     email = models.EmailField(max_length=254, unique=True)
     profile_image_url = models.URLField(max_length=200)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
     def get_status_messages(self):
         #returns ordered status messages
         return self.status_messages.order_by('-timestamp')
     
     def get_absolute_url(self):
         return reverse('show_profile', kwargs={'pk': self.pk})
+    
+
+    def get_friends(self):
+        # get friend relationship
+        friends_as_profile1 = Friend.objects.filter(profile1=self)
+        friends_as_profile2 = Friend.objects.filter(profile2=self)
+        
+        # get the profiles in the relationship
+        friends = [friend.profile2 for friend in friends_as_profile1] + \
+                  [friend.profile1 for friend in friends_as_profile2]
+
+        return friends
+    
+    def add_friend(self, other):
+        #create new friend
+
+        if other == self:
+            return
+
+        if Friend.objects.filter(profile1=self, profile2=other).exists() or \
+           Friend.objects.filter(profile1=other, profile2=self).exists():
+            return
+
+        Friend.objects.create(profile1=self, profile2=other)
+
+    def get_friend_suggestions(self):
+        # Get all profiles except current profile and existing friends
+        friends = self.get_friends()
+        all_profiles = Profile.objects.exclude(id=self.id).exclude(id__in=[friend.id for friend in friends])
+        return all_profiles
 
 
 class StatusMessage(models.Model):
@@ -39,3 +72,13 @@ class Image(models.Model):
 
     def __str__(self):
         return f"Image for {self.status_message.message} uploaded on {self.timestamp}"
+
+
+class Friend(models.Model):
+    #new friend model to hold the relationship between two profiles
+    profile1 = models.ForeignKey(Profile, related_name="friendships_as_profile1", on_delete=models.CASCADE)
+    profile2 = models.ForeignKey(Profile, related_name="friendships_as_profile2", on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.profile1} & {self.profile2}"

@@ -53,6 +53,19 @@
         {% endfor %}
     </ul>
 
+    <h2>Friends:</h2>
+    <ul>
+      {% for friend in profile.get_friends %}
+        <li>
+          <a href="{% url 'show_profile' friend.pk %}">{{ friend.first_name }} {{ friend.last_name }}</a>
+        </li>
+      {% empty %}
+        <li>No friends yet.</li>
+      {% endfor %}
+    </ul>
+    
+    <a href="{% url 'friend_suggestions' profile.pk %}">Find Friend Suggestions</a>
+
     <h3>Post a New Status</h3>
     <a href="{% url 'create_status' profile.pk %}">Post a Status</a>
 
