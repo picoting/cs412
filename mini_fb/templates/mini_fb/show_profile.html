@@ -28,6 +28,8 @@
         </tr>
     </table>
 
+    <a href="{% url 'news_feed' profile.pk %}">View News Feed</a>
+
     <h3>Status Messages</h3>
     <ul>
         {% for status in profile.get_status_messages %}

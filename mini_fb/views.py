@@ -113,6 +113,7 @@ class CreateFriendView(View):
         return redirect('show_profile', pk=profile.pk)
     
 class ShowFriendSuggestionsView(DetailView):
+    #view to show friend suggestions for a profile
     model = Profile
     template_name = 'mini_fb/friend_suggestions.html'
     context_object_name = 'profile'
@@ -120,4 +121,15 @@ class ShowFriendSuggestionsView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['friend_suggestions'] = self.object.get_friend_suggestions()
+        return context
+
+class ShowNewsFeedView(DetailView):
+    #view to show news feed
+    model = Profile
+    template_name = 'mini_fb/news_feed.html'
+    context_object_name = 'profile'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['news_feed'] = self.object.get_news_feed()
         return context

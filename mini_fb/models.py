@@ -30,6 +30,7 @@ class Profile(models.Model):
                   [friend.profile1 for friend in friends_as_profile2]
 
         return friends
+        
     
     def add_friend(self, other):
         #create new friend
@@ -48,6 +49,12 @@ class Profile(models.Model):
         friends = self.get_friends()
         all_profiles = Profile.objects.exclude(id=self.id).exclude(id__in=[friend.id for friend in friends])
         return all_profiles
+
+    def get_news_feed(self):
+        friends = self.get_friends()
+        profiles_to_include = [self] + friends
+        # Get all status messages by this profile and its friends
+        return StatusMessage.objects.filter(profile__in=profiles_to_include).order_by('-timestamp')
 
 
 class StatusMessage(models.Model):
