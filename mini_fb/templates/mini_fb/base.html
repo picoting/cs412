@@ -8,11 +8,19 @@
     <body>
         <header>
             <h1>Welcome to Mini Facebook!</h1>
+
             <nav>
                 <ul>
                     <li><a href="{% url 'show_all_profiles' %}">View All Profiles</a></li>
                     <li><a href="{% url 'create_profile' %}">Create New Profile</a></li>
                 </ul>
+                {% if user.is_authenticated %}
+                    <p>Logged in as: {{ user.username }}</p>
+
+                {% else %}
+                    <p>You are not logged in.</p>
+                    <a href="{% url 'login' %}">Login</a>
+                {% endif %}
             </nav>
         </header>
 

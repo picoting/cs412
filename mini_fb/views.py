@@ -16,6 +16,8 @@ from django.shortcuts import get_object_or_404
 from .forms import CreateProfileForm
 from django.urls import reverse
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 class ShowAllProfilesView(ListView):
     model = Profile
     template_name = 'mini_fb/show_all_profiles.html'
@@ -74,7 +76,7 @@ class CreateStatusMessageView(CreateView):
         return reverse('show_profile', kwargs={'pk': self.kwargs['pk']})
     
 
-class UpdateProfileView(UpdateView):
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = UpdateProfileForm
     template_name = 'mini_fb/update_profile_form.html'
@@ -82,6 +84,10 @@ class UpdateProfileView(UpdateView):
     # dedirect to profile page after updating
     def get_success_url(self):
         return reverse('show_profile', kwargs={'pk': self.object.pk})
+    
+    def get_queryset(self):
+        # only allow the user associated with this profile to update it
+        return Profile.objects.filter(user=self.request.user)
 
 
 class DeleteStatusMessageView(DeleteView):
