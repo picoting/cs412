@@ -14,11 +14,13 @@
                     <li><a href="{% url 'show_all_profiles' %}">View All Profiles</a></li>
                     <li><a href="{% url 'create_profile' %}">Create New Profile</a></li>
                 </ul>
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated%}
                     <p>Logged in as: {{ user.username }}</p>
-
+                    <form action="{% url 'logout' %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
                 {% else %}
-                    <p>You are not logged in.</p>
                     <a href="{% url 'login' %}">Login</a>
                 {% endif %}
             </nav>
