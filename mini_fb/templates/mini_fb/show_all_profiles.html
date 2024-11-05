@@ -10,12 +10,7 @@
             <tr>
                 <td>
                     <a href="{% url 'show_profile' pk=profile.pk %}">
-                        {{ profile.first_name }}
-                    </a>
-                </td>
-                <td>
-                    <a href="{% url 'show_profile' pk=profile.pk %}">
-                        {{ profile.last_name }}
+                        {{ profile.first_name }} {{ profile.last_name }}
                     </a>
                 </td>
                 <td>{{ profile.city }}</td>
