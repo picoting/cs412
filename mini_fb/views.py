@@ -154,7 +154,7 @@ class DeleteStatusMessageView(DeleteView):
         return reverse('show_profile_logged_in')
 
     def get_object(self):
-        return get_object_or_404(StatusMessage, pk=self.kwargs['pk'])
+        return get_object_or_404(StatusMessage, pk=self.kwargs['pk'], profile__user=self.request.user)
     
 
 class UpdateStatusMessageView(UpdateView):

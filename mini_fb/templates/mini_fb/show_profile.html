@@ -50,8 +50,8 @@
 
             {% if user.is_authenticated and user == profile.user %}
 
-            <a href="{% url 'update_status' %}">Update</a>
-            <a href="{% url 'delete_status' %}">Delete</a>
+            <a href="{% url 'update_status' pk=status.pk%}">Update</a>
+            <a href="{% url 'delete_status' pk=status.pk%}">Delete</a>
 
             {% endif %}
 
