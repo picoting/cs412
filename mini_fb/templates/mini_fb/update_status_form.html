@@ -9,7 +9,7 @@
       <button type="submit">Update Status</button>
   </form>
 
-  <form method="GET" action="{% url 'show_profile' object.profile.pk %}">
+  <form method="GET" action="{% url 'show_profile_logged_in' %}">
       <button type="submit">Cancel</button>
   </form>
 {% endblock %}

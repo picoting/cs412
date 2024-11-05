@@ -7,6 +7,7 @@ from django.views.generic import DetailView
 from django.views.generic import CreateView
 from django.views.generic import UpdateView
 from django.views.generic import DeleteView
+from django.views.generic.edit import FormView
 
 from .models import *
 from .forms import *
@@ -16,7 +17,10 @@ from django.shortcuts import get_object_or_404
 from .forms import CreateProfileForm
 from django.urls import reverse
 
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.contrib.auth.forms import UserCreationForm
 
 class ShowAllProfilesView(ListView):
     model = Profile
@@ -30,6 +34,12 @@ class ShowProfilePageView(DetailView):
     template_name = 'mini_fb/show_profile.html'
     context_object_name = 'profile'
 
+    def get_object(self):
+        if 'pk' in self.kwargs:
+            return get_object_or_404(Profile, pk=self.kwargs['pk'])
+        else:
+            return get_object_or_404(Profile, user=self.request.user)
+
 
 
 class CreateProfileView(CreateView):
@@ -39,7 +49,45 @@ class CreateProfileView(CreateView):
 
     # redirect after submission
     def get_success_url(self):
-        return reverse('show_profile', kwargs={'pk': self.object.pk})
+        return reverse('show_profile_logged_in')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'user_form' not in context:
+            context['user_form'] = UserCreationForm()  # Add UserCreationForm to the context
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        user_form = UserCreationForm(self.request.POST)
+        profile_form = self.get_form()
+
+        #check if both forms are valid
+        if user_form.is_valid() and profile_form.is_valid():
+            return self.form_valid(user_form, profile_form)
+        else:
+            return self.form_invalid(user_form, profile_form)
+        
+    def form_valid(self, user_form, profile_form):
+        user = user_form.save()
+        #attach user to profile
+        profile_form.instance.user = user
+        profile_form.save()
+
+        #log in after registration
+        login(self.request, user)
+        return super().form_valid(profile_form)
+
+    #handle erros
+    def form_invalid(self, user_form, profile_form):
+        context = self.get_context_data()
+        context['user_form'] = user_form
+        context['form'] = profile_form
+        return self.render_to_response(context)
+    
+    def get_object(self):
+        return get_object_or_404(Profile, user=self.request.user)
+
     
 
 class CreateStatusMessageView(CreateView):
@@ -49,14 +97,14 @@ class CreateStatusMessageView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = get_object_or_404(Profile, pk=self.kwargs['pk'])
+        context['profile'] = get_object_or_404(Profile, user=self.request.user)
         return context
 
     def form_valid(self, form):
         #profile = get_object_or_404(Profile, pk=self.kwargs['pk'])
         #form.instance.profile = profile
 
-        profile = Profile.objects.get(pk=self.kwargs['pk'])
+        profile = Profile.objects.get(user=self.request.user)
         status_message = form.save(commit=False)
         status_message.profile = profile
         status_message.save() 
@@ -73,7 +121,10 @@ class CreateStatusMessageView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('show_profile', kwargs={'pk': self.kwargs['pk']})
+        return reverse('show_profile_logged_in')
+    
+    def get_object(self):
+        return get_object_or_404(Profile, user=self.request.user)
     
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
@@ -83,11 +134,14 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 
     # dedirect to profile page after updating
     def get_success_url(self):
-        return reverse('show_profile', kwargs={'pk': self.object.pk})
+        return reverse('show_profile_logged_in')
     
     def get_queryset(self):
         # only allow the user associated with this profile to update it
         return Profile.objects.filter(user=self.request.user)
+    
+    def get_object(self):
+        return get_object_or_404(Profile, user=self.request.user)
 
 
 class DeleteStatusMessageView(DeleteView):
@@ -97,7 +151,10 @@ class DeleteStatusMessageView(DeleteView):
 
     #redirect to profile after deleting status
     def get_success_url(self):
-        return reverse('show_profile', kwargs={'pk': self.object.profile.pk})
+        return reverse('show_profile_logged_in')
+
+    def get_object(self):
+        return get_object_or_404(StatusMessage, pk=self.kwargs['pk'])
     
 
 class UpdateStatusMessageView(UpdateView):
@@ -107,7 +164,10 @@ class UpdateStatusMessageView(UpdateView):
 
      #redirect to profile after updating status
     def get_success_url(self):
-        return reverse('show_profile', kwargs={'pk': self.object.profile.pk})
+        return reverse('show_profile_logged_in')
+    
+    def get_object(self):
+        return get_object_or_404(StatusMessage, pk=self.kwargs['pk'])
     
 
 class CreateFriendView(View):
@@ -117,6 +177,9 @@ class CreateFriendView(View):
         other = get_object_or_404(Profile, pk=self.kwargs['other_pk'])
         profile.add_friend(other)
         return redirect('show_profile', pk=profile.pk)
+
+    def get_object(self):
+        return get_object_or_404(Profile, user=self.request.user)
     
 class ShowFriendSuggestionsView(DetailView):
     #view to show friend suggestions for a profile
@@ -129,6 +192,9 @@ class ShowFriendSuggestionsView(DetailView):
         context['friend_suggestions'] = self.object.get_friend_suggestions()
         return context
 
+    def get_object(self):
+        return get_object_or_404(Profile, user=self.request.user)
+
 class ShowNewsFeedView(DetailView):
     #view to show news feed
     model = Profile
@@ -139,3 +205,6 @@ class ShowNewsFeedView(DetailView):
         context = super().get_context_data(**kwargs)
         context['news_feed'] = self.object.get_news_feed()
         return context
+
+    def get_object(self):
+        return get_object_or_404(Profile, user=self.request.user)

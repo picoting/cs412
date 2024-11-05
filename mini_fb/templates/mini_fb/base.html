@@ -16,6 +16,9 @@
                 </ul>
                 {% if user.is_authenticated%}
                     <p>Logged in as: {{ user.username }}</p>
+                    {% if user.profile and not user.is_staff%}
+                        <a href="{% url 'show_profile' %}">My Profile</a>
+                    {% endif %}
                     <form action="{% url 'logout' %}" method="POST">
                         {% csrf_token %}
                         <button type="submit">Logout</button>

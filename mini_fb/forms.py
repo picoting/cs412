@@ -33,4 +33,5 @@ class UpdateProfileForm(forms.ModelForm):
         super(UpdateProfileForm, self).__init__(*args, **kwargs)
         self.fields['city'].label = "City"
         self.fields['email'].label = "Email Address"
-        self.fields['profile_image'].label = "Profile Image URL"
+        if 'profile_image' in self.fields:
+            self.fields['profile_image'].required = False

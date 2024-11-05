@@ -6,11 +6,11 @@
     {% for suggestion in friend_suggestions %}
       <li>
         {{ suggestion.first_name }} {{ suggestion.last_name }}
-        <a href="{% url 'add_friend' profile.pk suggestion.pk %}">Add Friend</a>
+        <a href="{% url 'add_friend' suggestion.pk %}">Add Friend</a>
       </li>
     {% empty %}
       <li>No friend suggestions available.</li>
     {% endfor %}
   </ul>
-  <a href="{% url 'show_profile' profile.pk %}">Back to Profile</a>
+  <a href="{% url 'show_profile_logged_in' %}">Back to Profile</a>
 {% endblock %}

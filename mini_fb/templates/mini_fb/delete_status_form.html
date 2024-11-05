@@ -5,12 +5,12 @@
   
   <p>Are you sure you want to delete this status?</p>
   
-  <form method="POST">
-      {% csrf_token %}
-      <button type="submit">Yes, delete</button>
-  </form>
+  <form method="POST" action="{% url 'delete_status' pk=status_message.pk %}">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+</form>
 
-  <form method="GET" action="{% url 'show_profile' status_message.profile.pk %}">
+  <form method="GET" action="{% url 'show_profile_logged_in'%}">
       <button type="submit">Cancel</button>
   </form>
 {% endblock %}

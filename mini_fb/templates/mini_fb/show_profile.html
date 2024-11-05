@@ -29,7 +29,7 @@
     </table>
 
     {% if user.is_authenticated and user == profile.user %}
-    <a href="{% url 'news_feed' profile.pk %}">View News Feed</a>
+    <a href="{% url 'news_feed' %}">View News Feed</a>
     {% endif %}
 
     <h3>Status Messages</h3>
@@ -50,8 +50,8 @@
 
             {% if user.is_authenticated and user == profile.user %}
 
-            <a href="{% url 'update_status' status.pk %}">Update</a>
-            <a href="{% url 'delete_status' status.pk %}">Delete</a>
+            <a href="{% url 'update_status' %}">Update</a>
+            <a href="{% url 'delete_status' %}">Delete</a>
 
             {% endif %}
 
@@ -74,13 +74,13 @@
 
     {% if user.is_authenticated and user == profile.user %}
     
-        <a href="{% url 'friend_suggestions' profile.pk %}">Find Friend Suggestions</a>
+        <a href="{% url 'friend_suggestions'%}">Find Friend Suggestions</a>
 
         <h3>Post a New Status</h3>
-        <a href="{% url 'create_status' profile.pk %}">Post a Status</a>
+        <a href="{% url 'create_status' %}">Post a Status</a>
 
         <h3>Update Profile</h3>
-        <a href="{% url 'update_profile' pk=profile.pk %}">Update Profile</a>
+        <a href="{% url 'update_profile'%}">Update Profile</a>
     {% endif %}
 
 {% endblock %}
