@@ -1,0 +1,14 @@
+{% extends 'voter_analytics/base.html' %}
+
+
+{% block content %}
+    <h1>Voter Details</h1>
+    <p><strong>First Name:</strong> {{ voter.first_name }}</p>
+    <p><strong>Last Name:</strong> {{ voter.last_name }}</p>
+    
+    <p><strong>Address:</strong> {{ voter.street_number }} {{ voter.street_name }} {% if voter.apartment_number %} Apt {{ voter.apartment_number }}{% endif %}</p>
+    {% with full_address=voter.street_number|stringformat:"s"|add:" "|add:voter.street_name|add:", Newton, MA "|add:voter.zip_code|stringformat:"s" %}
+    <a href="https://maps.google.com/?q={{ full_address|urlencode }}" target="_blank">View Address on Google Maps</a>
+    {% endwith %}
+    
+{% endblock %}
