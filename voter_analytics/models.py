@@ -1,4 +1,11 @@
 from django.db import models
+    
+import csv
+from datetime import datetime
+from django.conf import settings
+import os
+
+from .constants import PARTY_AFFILIATION_MAP
 
 class Voter(models.Model):
     last_name = models.CharField(max_length=100)
@@ -20,11 +27,6 @@ class Voter(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-    
-import csv
-from datetime import datetime
-from django.conf import settings
-import os
 
 def load_data():
     file_path = os.path.join(settings.BASE_DIR, 'newton_voters.csv')
@@ -32,6 +34,10 @@ def load_data():
         reader = csv.DictReader(csvfile)
         voters = []
         for row in reader:
+
+            abbreviation = row['Party Affiliation'].strip()
+            full_party_name = PARTY_AFFILIATION_MAP.get(abbreviation, 'Unknown')
+
             voter = Voter(
                 last_name=row['Last Name'],
                 first_name=row['First Name'],
@@ -41,7 +47,7 @@ def load_data():
                 zip_code=row['Residential Address - Zip Code'],
                 date_of_birth=datetime.strptime(row['Date of Birth'], '%Y-%m-%d').date(),
                 date_of_registration=datetime.strptime(row['Date of Registration'], '%Y-%m-%d').date(),
-                party_affiliation=row['Party Affiliation'].strip().lower() == 'true',
+                party_affiliation=full_party_name,
                 precinct_number=row['Precinct Number'],
                 v20state=row['v20state'].strip().lower() == 'true',
                 v21town=row['v21town'].strip().lower() == 'true',
