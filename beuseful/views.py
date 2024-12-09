@@ -78,13 +78,20 @@ class CreateServiceView(CreateView):
             raise ValueError("Logged-in user does not have an associated profile or a valid username.")
         return reverse_lazy('profile_detail', kwargs={'username': self.request.user.profile.username})
 
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.urls import reverse
+from django.views.generic.edit import CreateView
+from .models import Profile
+from .forms import CreateProfileForm
+
 class CreateProfileView(CreateView):
     model = Profile
     form_class = CreateProfileForm
     template_name = 'beuseful/create_profile_form.html'
 
     def get_success_url(self):
-        # Redirect to the default beuseful page (profile list)
+        # Redirect to the profile list page
         return reverse('profile_list')
 
     def get_context_data(self, **kwargs):
@@ -104,10 +111,12 @@ class CreateProfileView(CreateView):
             return self.form_invalid(user_form, profile_form)
 
     def form_valid(self, user_form, profile_form):
-        user = user_form.save()
-        profile_form.instance.user = user
-        profile_form.save()
-        login(self.request, user)  # Log the user in after profile creation
+        user = user_form.save()  # Create the User
+        profile = profile_form.save(commit=False)
+        profile.user = user  # Link the Profile to the User
+        profile.username = user.username  # Set the Profile username to match the User username
+        profile.save()  # Save the Profile
+        login(self.request, user)  # Log the user in after creation
         return super().form_valid(profile_form)
 
     def form_invalid(self, user_form, profile_form):

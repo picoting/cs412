@@ -1,1 +1,38 @@
-z
+{% extends 'beuseful/base.html' %}
+
+{% block title %}Create New Profile{% endblock %}
+
+{% block content %}
+<h2>Create Profile</h2>
+<form method="post" action="{% url 'create_profile_form' %}">
+    {% csrf_token %}
+    
+    <!-- User Form Errors -->
+    {% if user_form.errors %}
+        <div class="error">
+            <ul>
+                {% for field, errors in user_form.errors.items %}
+                    <li>{{ field }}: {{ errors|join:", " }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+    <!-- Profile Form Errors -->
+    {% if form.errors %}
+        <div class="error">
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    <li>{{ field }}: {{ errors|join:", " }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+    <!-- Render Forms -->
+    {{ user_form.as_p }}
+    {{ form.as_p }}
+
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}
