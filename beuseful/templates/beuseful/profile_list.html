@@ -1,0 +1,14 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<h1>All Profiles</h1>
+<ul>
+    {% for profile in profiles %}
+        <li>
+            <a href="{% url 'profile_detail' username=profile.username %}">
+                {{ profile.username }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

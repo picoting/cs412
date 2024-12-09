@@ -1,0 +1,16 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<h1>Profile: {{ profile.username }}</h1>
+<p><strong>Email:</strong> {{ profile.email }}</p>
+<p><strong>Is Seller:</strong> {{ profile.is_seller }}</p>
+{% if profile.is_seller %}
+    <h2>Services</h2>
+    <ul>
+        {% for service in profile.service_set.all %}
+            <li>{{ service.title }} - ${{ service.price }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<a href="{% url 'profile_list' %}">Back to Profiles</a>
+{% endblock %}

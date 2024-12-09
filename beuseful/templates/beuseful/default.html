@@ -1,0 +1,9 @@
+{% extends 'beuseful/base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+    <h1>Welcome to BeUseful</h1>
+    <p>Please log in to continue.</p>
+    <a href="{% url 'login' %}">Log In</a>
+{% endblock %}

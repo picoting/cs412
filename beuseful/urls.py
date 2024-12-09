@@ -1,0 +1,20 @@
+# quotes/urls.py
+from django.urls import path, include
+from django.conf import settings
+from . import views
+from .views import *
+from django.contrib.auth import views as auth_views
+
+from django.contrib.auth.views import LoginView, LogoutView
+
+
+
+# all of the URLs that are part of this app
+urlpatterns = [
+    path('', DefaultView.as_view(), name='default'),
+    path('profiles/', ProfileListView.as_view(), name='profile_list'),
+    path("profiles/<str:username>/", ProfileDetailView.as_view(), name="profile_detail"),
+    path('create_profile/', CreateProfileView.as_view(), name='create_profile_form'), 
+    path('login/', LoginView.as_view(template_name='beuseful/log_in.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='beuseful/log_out.html'), name='logout'),
+]

@@ -1,0 +1,41 @@
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Social Media{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <!-- logo -->
+                <a href="{% url 'home' %}" class="logo">BUseful</a>
+                <!-- nav links-->
+                <ul class="nav-links">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'profile_detail' username=user.username %}">My Profile</a></li>
+                        <li><a href="{% url 'profile_list' %}">Profile List</a></li>
+                        <form action="{% url 'logout' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">Log In</a></li>
+                        <li><a href="{% url 'create_profile_form' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="content">
+        {% block content %}
+        <!-- page stuff-->
+        {% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2024 BUseful. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
