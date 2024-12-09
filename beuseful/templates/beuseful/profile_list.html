@@ -4,11 +4,15 @@
 <h1>All Profiles</h1>
 <ul>
     {% for profile in profiles %}
-        <li>
-            <a href="{% url 'profile_detail' username=profile.username %}">
-                {{ profile.username }}
-            </a>
-        </li>
+        {% if profile.username %}
+            <li>
+                <a href="{% url 'profile_detail' username=profile.username %}">
+                    {{ profile.username }}
+                </a>
+            </li>
+        {% else %}
+            <li>Invalid profile (missing username)</li>
+        {% endif %}
     {% endfor %}
 </ul>
 {% endblock %}

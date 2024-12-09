@@ -1,0 +1,11 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<h2>Create a New Service</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Service</button>
+</form>
+<a href="{% url 'profile' %}">Back to Profile</a>
+{% endblock %}

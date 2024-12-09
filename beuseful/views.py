@@ -13,17 +13,28 @@ from django.contrib.auth.views import LoginView, LogoutView
 
 class ProfileListView(ListView):
     model = Profile
-    template_name = 'profile_list.html'
+    template_name = 'beuseful/profile_list.html'
     context_object_name = 'profiles'
+
+    def get_queryset(self):
+        # Exclude profiles with empty or null usernames
+        return Profile.objects.exclude(username='')
+
 
 class ProfileDetailView(DetailView):
     model = Profile
     template_name = "beuseful/profile_detail.html"
     context_object_name = "profile"
 
-    # Override get_object to use username as the lookup field
     def get_object(self, queryset=None):
-        return Profile.objects.get(username=self.kwargs['username'])
+        return get_object_or_404(Profile, username=self.kwargs.get('username'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Check if the logged-in user is viewing their own profile
+        context['is_own_profile'] = self.request.user.is_authenticated and self.get_object().username == self.request.user.username
+        return context
+
 
 
 class CreateServiceView(CreateView):

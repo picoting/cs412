@@ -13,8 +13,9 @@ from django.contrib.auth.views import LoginView, LogoutView
 urlpatterns = [
     path('', DefaultView.as_view(), name='default'),
     path('profiles/', ProfileListView.as_view(), name='profile_list'),
-    path("profiles/<str:username>/", ProfileDetailView.as_view(), name="profile_detail"),
+    path('profile/<str:username>/', ProfileDetailView.as_view(), name='profile_detail'),
     path('create_profile/', CreateProfileView.as_view(), name='create_profile_form'), 
     path('login/', LoginView.as_view(template_name='beuseful/log_in.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='beuseful/log_out.html'), name='logout'),
+    path('create_service/', CreateServiceView.as_view(), name='create_service'),
 ]

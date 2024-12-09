@@ -4,6 +4,7 @@
 <h1>Profile: {{ profile.username }}</h1>
 <p><strong>Email:</strong> {{ profile.email }}</p>
 <p><strong>Is Seller:</strong> {{ profile.is_seller }}</p>
+
 {% if profile.is_seller %}
     <h2>Services</h2>
     <ul>
@@ -11,6 +12,12 @@
             <li>{{ service.title }} - ${{ service.price }}</li>
         {% endfor %}
     </ul>
+
+    <!-- Show "Create Service" option only if this is the logged-in user's profile -->
+    {% if is_own_profile %}
+        <a href="{% url 'create_service' %}">Create a New Service</a>
+    {% endif %}
 {% endif %}
+
 <a href="{% url 'profile_list' %}">Back to Profiles</a>
 {% endblock %}
