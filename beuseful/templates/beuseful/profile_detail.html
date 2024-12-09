@@ -8,8 +8,10 @@
 {% if profile.is_seller %}
     <h2>Services</h2>
     <ul>
-        {% for service in profile.service_set.all %}
+        {% for service in profile.services.all %}
             <li>{{ service.title }} - ${{ service.price }}</li>
+        {% empty %}
+            <li>No services available</li>
         {% endfor %}
     </ul>
 

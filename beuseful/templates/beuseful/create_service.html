@@ -7,5 +7,7 @@
     {{ form.as_p }}
     <button type="submit">Create Service</button>
 </form>
-<a href="{% url 'profile' %}">Back to Profile</a>
+{% if user.is_authenticated and user.profile and user.profile.username %}
+<a href="{% url 'profile_detail' username=user.profile.username %}">Back to Your Profile</a>
+{% endif %}
 {% endblock %}
