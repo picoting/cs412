@@ -1,9 +1,19 @@
 from django.db import models
-
+from django.contrib.auth.models import User
+"""
 # Custom Profile model
 class Profile(models.Model):
     username = models.CharField(max_length=30, default="johndoeuser")
     email = models.EmailField(unique=True)  # Ensure unique emails
+    is_seller = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.username
+"""
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    username = models.CharField(max_length=30, unique=True)
+    email = models.EmailField(unique=True)
     is_seller = models.BooleanField(default=False)
 
     def __str__(self):

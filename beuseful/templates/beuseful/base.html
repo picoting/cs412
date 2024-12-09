@@ -15,7 +15,9 @@
                 <!-- nav links-->
                 <ul class="nav-links">
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'profile_detail' username=profile.username %}">View Profile</a></li>
+                        {% if user.is_authenticated and user.profile and user.profile.username %}
+                        <a href="{% url 'profile_detail' username=user.profile.username %}">My Profile</a>
+                        {% endif %}
                         <li><a href="{% url 'profile_list' %}">Profile List</a></li>
                         <form action="{% url 'logout' %}" method="POST">
                             {% csrf_token %}
