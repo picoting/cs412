@@ -7,37 +7,42 @@
     <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="nav-container">
-                <!-- logo -->
-                <a href="{% url 'home' %}" class="logo">BUseful</a>
-                <!-- nav links-->
-                <ul class="nav-links">
-                    {% if user.is_authenticated %}
-                        {% if user.profile and user.profile.username %}
-                        <a href="{% url 'profile_detail' username=user.profile.username %}">My Profile</a>
+    <div class="page-container"> <!-- Wrap the content for flex layout -->
+        <header>
+            <nav class="navbar">
+                <div class="nav-container">
+                    <!-- Logo -->
+                    <a href="{% url 'home' %}" class="logo">BUseful</a>
+                    <!-- Navigation Links -->
+                    <ul class="nav-links">
+                        {% if user.is_authenticated %}
+                            {% if user.profile and user.profile.username %}
+                                <li><a href="{% url 'profile_detail' username=user.profile.username %}">My Profile</a></li>
+                            {% endif %}
+                            <li><a href="{% url 'profile_list' %}">Profile List</a></li>
+                            <li>
+                                <!-- Style the logout form to look like a nav link -->
+                                <form action="{% url 'logout' %}" method="POST" id="logout-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="nav-link-button">Logout</button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <li><a href="{% url 'login' %}">Log In</a></li>
+                            <li><a href="{% url 'create_profile_form' %}">Register</a></li>
                         {% endif %}
-                        <li><a href="{% url 'profile_list' %}">Profile List</a></li>
-                        <form action="{% url 'logout' %}" method="POST">
-                            {% csrf_token %}
-                            <button type="submit">Logout</button>
-                        </form>
-                    {% else %}
-                        <li><a href="{% url 'login' %}">Log In</a></li>
-                        <li><a href="{% url 'create_profile_form' %}">Register</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <main class="content">
-        {% block content %}
-        <!-- page stuff-->
-        {% endblock %}
-    </main>
-    <footer>
-        <p>&copy; 2024 BUseful. All Rights Reserved.</p>
-    </footer>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <main class="content">
+            {% block content %}
+            <!-- page content -->
+            {% endblock %}
+        </main>
+        <footer>
+            <p>&copy; 2024 BUseful. All Rights Reserved.</p>
+        </footer>
+    </div>
 </body>
 </html>
