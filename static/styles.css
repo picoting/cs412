@@ -349,3 +349,20 @@ footer {
     text-align: center;
     margin-top: 20px;
 }
+
+.stars {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 5px 0;
+}
+
+.filled-star {
+    color: gold;
+    font-size: 1.2rem;
+}
+
+.empty-star {
+    color: #ccc;
+    font-size: 1.2rem;
+}

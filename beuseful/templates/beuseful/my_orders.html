@@ -12,6 +12,7 @@
                 <th>Total Price</th>
                 <th>Status</th>
                 <th>Date Ordered</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -19,14 +20,23 @@
             <tr>
                 <td>{{ order.service.title }}</td>
                 <td>
-                    <a href="{% url 'profile_detail' username=order.seller.username %}" class="link">
-                        {{ order.seller.username }}
+                    <a href="{% url 'profile_detail' username=order.service.seller.username %}" class="link">
+                        {{ order.service.seller.username }}
                     </a>
                 </td>
                 <td>{{ order.quantity }}</td>
                 <td>${{ order.total_price }}</td>
                 <td>{{ order.get_status_display }}</td>
                 <td>{{ order.date_ordered }}</td>
+                <td>
+                    {% if order.status == "Completed" %}
+                        {% if order.user_has_reviewed %}
+                            <span>Reviewed</span>
+                        {% else %}
+                            <a href="{% url 'leave_review' order.id %}" class="button small">Leave Review</a>
+                        {% endif %}
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>

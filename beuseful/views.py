@@ -5,9 +5,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import login
 from django.contrib import messages
+from django.db.models import Avg
+from math import floor
 
 from .models import Profile, Service, Order
-from .forms import CreateProfileForm, CreateServiceForm, CreateOrderForm, OrderUpdateForm
+from .forms import *
 
 
 # PROFILE VIEWS
@@ -22,11 +24,12 @@ class ProfileListView(ListView):
         return queryset
 
 
+
 class ProfileDetailView(DetailView):
     model = Profile
     template_name = "beuseful/profile_detail.html"
     context_object_name = "profile"
-
+    
     def get_object(self, queryset=None):
         username = self.kwargs.get('username')
         if not username:
@@ -36,11 +39,27 @@ class ProfileDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         profile = self.object
-        context['is_own_profile'] = (
-            self.request.user.is_authenticated
-            and hasattr(self.request.user, 'profile')
-            and profile == self.request.user.profile
-        )
+
+        # Calculate Seller Average Rating (if they are a seller)
+        seller_reviews = profile.received_reviews.filter(order__service__seller=profile)
+        seller_avg_rating = seller_reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+
+        # Calculate Buyer Average Rating
+        buyer_reviews = profile.received_reviews.filter(order__buyer=profile)
+        buyer_avg_rating = buyer_reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+
+        # Add star information to the context
+        context['seller_avg_rating'] = seller_avg_rating
+        context['seller_filled_stars'] = range(floor(seller_avg_rating))  # Whole stars
+        context['seller_empty_stars'] = range(5 - floor(seller_avg_rating))  # Remaining stars
+
+        context['buyer_avg_rating'] = buyer_avg_rating
+        context['buyer_filled_stars'] = range(floor(buyer_avg_rating))  # Whole stars
+        context['buyer_empty_stars'] = range(5 - floor(buyer_avg_rating))  # Remaining stars
+
+        context['seller_reviews'] = seller_reviews
+        context['buyer_reviews'] = buyer_reviews
+
         return context
 
 
@@ -156,6 +175,40 @@ def my_orders(request):
     return render(request, 'beuseful/my_orders.html', {'orders': orders})
 
 
+def leave_review(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    # Ensure the order is completed
+    if order.status != "Completed":
+        messages.error(request, "You can only leave a review for completed orders.")
+        return redirect('my_orders')
+
+    # Ensure the logged-in user is the buyer or seller of the order
+    if request.user.profile not in [order.buyer, order.service.seller]:
+        messages.error(request, "You are not authorized to review this order.")
+        return redirect('my_orders')
+
+    # Prevent duplicate reviews for the same order and user
+    existing_review = Review.objects.filter(order=order, reviewer=request.user.profile).first()
+    if existing_review:
+        messages.error(request, "You have already left a review for this order.")
+        return redirect('my_orders')
+
+    if request.method == "POST":
+        form = CreateReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.order = order
+            review.reviewer = request.user.profile
+            # Set the reviewee (opposite of the reviewer)
+            review.reviewee = order.service.seller if request.user.profile == order.buyer else order.buyer
+            review.save()
+            messages.success(request, "Your review has been submitted.")
+            return redirect('my_orders')
+    else:
+        form = CreateReviewForm()
+
+    return render(request, 'beuseful/leave_review.html', {'form': form, 'order': order})
 
 # DEFAULT VIEW
 class DefaultView(TemplateView):
@@ -174,3 +227,44 @@ class CustomLogoutView(LogoutView):
 #ABOUT PAGE VIEW
 class AboutPageView(TemplateView):
     template_name = "beuseful/about.html"
+
+#ORDERS VIEWS/CLASSES
+class MyOrdersView(ListView):
+    model = Order
+    template_name = 'beuseful/my_orders.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        # Fetch orders where the logged-in user is the buyer
+        return Order.objects.filter(buyer=self.request.user.profile)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        orders = self.get_queryset()
+
+        # Add a flag to each order indicating if the user has left a review
+        for order in orders:
+            order.user_has_reviewed = order.reviews.filter(reviewer=self.request.user.profile).exists()
+
+        context['orders'] = orders
+        return context
+    
+class ManageOrdersView(ListView):
+    model = Order
+    template_name = 'beuseful/manage_orders.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        # Fetch orders for the services provided by the logged-in seller
+        return Order.objects.filter(service__seller=self.request.user.profile)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        orders = self.get_queryset()
+
+        # Add a flag to each order indicating if the seller has left a review
+        for order in orders:
+            order.user_has_reviewed = order.reviews.filter(reviewer=self.request.user.profile).exists()
+
+        context['orders'] = orders
+        return context

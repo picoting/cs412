@@ -1,0 +1,16 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<h1>Leave a Review</h1>
+<p><strong>Order for:</strong> {{ order.service.title }}</p>
+<p><strong>Seller:</strong> {{ order.service.seller.username }}</p>
+<p><strong>Status:</strong> {{ order.get_status_display }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="button">Submit Review</button>
+</form>
+
+<a href="{% url 'profile' %}" class="button">Back to my Profile</a>
+{% endblock %}

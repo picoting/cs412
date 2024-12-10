@@ -68,12 +68,14 @@ class OrderUpdateForm(forms.ModelForm):
 
 
 class CreateReviewForm(forms.ModelForm):
-    """
-    Form for creating a new Review.
-    """
-    rating = forms.IntegerField(label="Rating (1-5)", required=True, min_value=1, max_value=5)
-    comment = forms.CharField(widget=forms.Textarea, label="Comment", required=False)
-
     class Meta:
         model = Review
-        fields = ['rating', 'comment', 'reviewer', 'reviewee', 'order']
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+            'comment': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Leave a comment...'}),
+        }
+        labels = {
+            'rating': 'Rating (out of 5)',
+            'comment': 'Comment (optional)',
+        }

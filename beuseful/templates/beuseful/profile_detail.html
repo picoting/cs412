@@ -6,6 +6,34 @@
 <p><strong>Is Seller:</strong> {{ profile.is_seller }}</p>
 
 {% if profile.is_seller %}
+    <p><strong>Seller Rating:</strong></p>
+    <div class="stars">
+        <!-- Render filled stars -->
+        {% for star in seller_filled_stars %}
+            <span class="filled-star">&#9733;</span>
+        {% endfor %}
+        <!-- Render empty stars -->
+        {% for star in seller_empty_stars %}
+            <span class="empty-star">&#9734;</span>
+        {% endfor %}
+        <span>({{ seller_reviews.count }} review{{ seller_reviews.count|pluralize }})</span>
+    </div>
+{% endif %}
+
+<p><strong>Buyer Rating:</strong></p>
+<div class="stars">
+    <!-- Render filled stars -->
+    {% for star in buyer_filled_stars %}
+        <span class="filled-star">&#9733;</span>
+    {% endfor %}
+    <!-- Render empty stars -->
+    {% for star in buyer_empty_stars %}
+        <span class="empty-star">&#9734;</span>
+    {% endfor %}
+    <span>({{ buyer_reviews.count }} review{{ buyer_reviews.count|pluralize }})</span>
+</div>
+
+{% if profile.is_seller %}
     <h2>Services</h2>
     <ul>
         {% for service in profile.services.all %}
@@ -19,9 +47,13 @@
     </ul>
 
     {% if is_own_profile %}
-        <a href="{% url 'create_service' %}">Create a New Service</a>
-        <a href="{% url 'manage_orders' %}">Manage Orders</a>
-    {% endif %}
+    <div class="button-container">
+        <a href="{% url 'create_service' %}" class="button">Create a New Service</a>
+        <a href="{% url 'manage_orders' %}" class="button">Manage Orders</a>
+    </div>
 {% endif %}
-<a href="{% url 'profile_list' %}">Back to Profiles</a>
+<div class="button-container">
+    <a href="{% url 'profile_list' %}" class="button">Back to Profiles</a>
+</div>
+{% endif %}
 {% endblock %}
