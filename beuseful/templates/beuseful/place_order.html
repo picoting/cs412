@@ -2,10 +2,23 @@
 
 {% block content %}
 <h1>Order {{ service.title }}</h1>
+
+<div class="service-details">
+    <h2>Service Details</h2>
+    <p><strong>Category:</strong> {{ service.get_category_display }}</p>
+    <p><strong>Description:</strong> {{ service.description }}</p>
+    <p><strong>Price:</strong> ${{ service.price }}</p>
+    <p><strong>Seller:</strong> <a href="{% url 'profile_detail' username=service.seller.username %}">{{ service.seller.username }}</a></p>
+</div>
+
+<h2>Order Form</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Place Order</button>
+    <button type="submit" class="button">Place Order</button>
 </form>
-<a href="{% url 'profile_detail' username=service.seller.username %}">Back to Seller Profile</a>
+
+<div class="button-container">
+    <a href="{% url 'profile_detail' username=service.seller.username %}" class="button">Back to Seller Profile</a>
+</div>
 {% endblock %}

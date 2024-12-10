@@ -38,10 +38,8 @@
     <ul>
         {% for service in profile.services.all %}
             <li>
-                {{ service.title }} - ${{ service.price }}
-                {% if request.user.is_authenticated and not is_own_profile %}
-                    <a href="{% url 'place_order' service.id %}">Order This Service</a>
-                {% endif %}
+                <!-- Service name links to the place_order page -->
+                <a href="{% url 'place_order' service.id %}">{{ service.title }}</a> - ${{ service.price }}
             </li>
         {% endfor %}
     </ul>
@@ -51,9 +49,9 @@
         <a href="{% url 'create_service' %}" class="button">Create a New Service</a>
         <a href="{% url 'manage_orders' %}" class="button">Manage Orders</a>
     </div>
-{% endif %}
-<div class="button-container">
-    <a href="{% url 'profile_list' %}" class="button">Back to Profiles</a>
-</div>
+    {% endif %}
+    <div class="button-container">
+        <a href="{% url 'profile_list' %}" class="button">Back to Profiles</a>
+    </div>
 {% endif %}
 {% endblock %}

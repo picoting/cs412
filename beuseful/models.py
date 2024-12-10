@@ -17,9 +17,16 @@ class Profile(models.Model):
     username = models.CharField(max_length=30, unique=True)
     email = models.EmailField(unique=True)
     is_seller = models.BooleanField(default=False)
+    followers = models.ManyToManyField('self', symmetrical=False, related_name='following', blank=True)
 
     def __str__(self):
         return self.username
+
+    def followers_count(self):
+        return self.followers.count()
+
+    def following_count(self):
+        return self.following.count()
 
 # Service model
 class Service(models.Model):
