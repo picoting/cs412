@@ -1,0 +1,31 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<div class="about-container">
+    <h1>About BUseful</h1>
+    <p>
+        Welcome to <strong>BUseful</strong>, a platform designed to connect students in need of services with peers who offer those services. Whether you're looking for help with tutoring, repairs, or creative tasks, or you're a skilled seller looking to offer your talents, this site is your go-to marketplace.
+    </p>
+    <h2>Our Mission</h2>
+    <p>
+        Our mission is to foster collaboration and entrepreneurship within student communities. We aim to:
+        <ul>
+            <li>Provide a platform for students to monetize their skills and talents.</li>
+            <li>Offer affordable and reliable services to students in need.</li>
+            <li>Encourage a culture of mutual support and cooperation among peers.</li>
+        </ul>
+    </p>
+    <h2>How It Works</h2>
+    <p>
+        <ol>
+            <li>Sign up and create your profile.</li>
+            <li>Browse services offered by sellers or register as a seller to list your own services.</li>
+            <li>Place orders and track their progress in real-time.</li>
+        </ol>
+    </p>
+    <h2>Get Started Today</h2>
+    <p>
+        Ready to start collaborating with your peers? <a href="{% url 'create_profile_form' %}">Register here</a> and become a part of the BUseful community!
+    </p>
+</div>
+{% endblock %}

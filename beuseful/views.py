@@ -170,3 +170,7 @@ class DefaultView(TemplateView):
 # CUSTOM LOGOUT VIEW
 class CustomLogoutView(LogoutView):
     http_method_names = ['get', 'post']
+
+#ABOUT PAGE VIEW
+class AboutPageView(TemplateView):
+    template_name = "beuseful/about.html"

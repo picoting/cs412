@@ -22,4 +22,5 @@ urlpatterns = [
     path('orders/manage/', manage_orders, name='manage_orders'),
     path('order/<int:order_id>/update/', update_order_status, name='update_order_status'),
     path('my_orders/', my_orders, name='my_orders'),
+    path('about/', AboutPageView.as_view(), name='about'),
 ]

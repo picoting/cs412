@@ -12,7 +12,7 @@
             <nav class="navbar">
                 <div class="nav-container">
                     <!-- Logo -->
-                    <a href="{% url 'home' %}" class="logo">BUseful</a>
+                    <a href="{% url 'about' %}" class="logo">BUseful</a>
                     <!-- Primary Navigation Links -->
                     <ul class="nav-links">
                         {% if user.is_authenticated %}
@@ -31,6 +31,7 @@
                             <li><a href="{% url 'login' %}">Log In</a></li>
                             <li><a href="{% url 'create_profile_form' %}">Register</a></li>
                         {% endif %}
+                        <li><a href="{% url 'about' %}">About</a></li>
                     </ul>
                 </div>
             </nav>
