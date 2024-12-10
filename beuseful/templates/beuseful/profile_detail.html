@@ -96,24 +96,41 @@
     <div class="services-section">
         <h3>Services</h3>
         {% if profile.services.all %}
-            <ul class="services-list">
-                {% for service in profile.services.all %}
-                    <li>
-                        {% if not is_own_profile %}
-                            <a href="{% url 'place_order' service.id %}">
-                                {{ service.title }}
-                            </a>
-                        {% else %}
-                            {{ service.title }}
-                        {% endif %}
-                        - ${{ service.price }}
-                    </li>
-                {% endfor %}
-            </ul>
+            <table class="services-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service in profile.services.all %}
+                        <tr>
+                            <!-- Service Title -->
+                            <td>
+                                {% if not is_own_profile %}
+                                    <a href="{% url 'place_order' service.id %}">
+                                        {{ service.title }}
+                                    </a>
+                                {% else %}
+                                    {{ service.title }}
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Service Description -->
+                            <td>{{ service.description|truncatechars:50 }}</td>
+                            
+                            <!-- Service Price -->
+                            <td>${{ service.price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
             <p>No services available yet.</p>
         {% endif %}
-
+    
         {% if is_own_profile %}
             <div class="button-container">
                 <a href="{% url 'create_service' %}" class="button">Add New Service</a>
@@ -121,5 +138,6 @@
         {% endif %}
     </div>
     {% endif %}
+    
 </div>
 {% endblock %}
