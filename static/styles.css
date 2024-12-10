@@ -53,7 +53,8 @@ body {
 .content {
     padding: 20px;
     max-width: 800px;
-    margin: 0 auto;
+    margin-top: 60px;
+    margin-left: 400px;
 }
 
 footer {
@@ -187,22 +188,63 @@ footer {
 .navbar {
     background-color: #8e0e0e;
     color: white;
-    padding: 10px 20px; /* Ensure consistent padding */
+    padding: 0 20px; 
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 60px;
+    line-height: 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    border-bottom: 1px solid #ddd;
 }
 
 /* Secondary Navbar */
 .secondary-navbar {
-    background-color: #f0f0f0; /* Light gray */
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    padding: 10px 20px; /* Match the padding of the primary navbar */
+    background-color: #f0f0f0;
+    border-right: 1px solid #ddd;
+    height: calc(100vh - 60px);
+    width: 200px; 
+    position: fixed; 
+    top: 60px; 
+    left: 0;
+    padding: 10px; 
     display: flex;
-    align-items: center;
-    justify-content: flex-start; /* Align content to the left */
-    gap: 20px; /* Add spacing between links */
+    flex-direction: column; 
+    gap: 10px;
+    overflow-y: auto; 
+}
+
+/* Secondary Navbar Links */
+.secondary-navbar ul {
+    list-style: none; /* Remove bullets */
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    gap: 10px; /* Add spacing between links */
+}
+
+.secondary-navbar li {
+    width: 100%; /* Links take up full width */
+}
+
+.secondary-navbar a {
+    text-decoration: none; /* Remove underline */
+    color: #333; /* Dark gray for links */
+    font-size: 1rem;
+    padding: 10px; /* Add padding for better clickability */
+    display: block; /* Make links block-level */
+    border-radius: 4px;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.secondary-navbar a:hover {
+    background-color: #ddd; /* Highlight background on hover */
+    color: #8e0e0e; /* Match the site's primary color */
 }
 
 /* Links inside Navbars */
