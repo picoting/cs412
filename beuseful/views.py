@@ -29,7 +29,7 @@ class ProfileDetailView(DetailView):
     model = Profile
     template_name = "beuseful/profile_detail.html"
     context_object_name = "profile"
-    
+
     def get_object(self, queryset=None):
         username = self.kwargs.get('username')
         if not username:
@@ -39,6 +39,12 @@ class ProfileDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         profile = self.object
+
+        context['is_own_profile'] = (
+        self.request.user.is_authenticated
+        and hasattr(self.request.user, 'profile')
+        and profile == self.request.user.profile
+        )
 
         # Calculate Seller Average Rating (if they are a seller)
         seller_reviews = profile.received_reviews.filter(order__service__seller=profile)

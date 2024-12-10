@@ -23,10 +23,20 @@ class Profile(models.Model):
 
 # Service model
 class Service(models.Model):
+    CATEGORY_CHOICES = [
+        ('Arts', 'Arts'),
+        ('Technology', 'Technology'),
+        ('Educational', 'Educational'),
+        ('Lifestyle', 'Lifestyle'),
+        ('Household', 'Household'),
+        ('Business', 'Business'),
+        ('Misc', 'Misc.'),
+    ]
+
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    category = models.CharField(max_length=100)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='Misc')
     seller = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='services')
 
     def __str__(self):

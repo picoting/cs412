@@ -350,6 +350,25 @@ footer {
     margin-top: 20px;
 }
 
+/* Container for Profile Details */
+.profile-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    margin-bottom: 20px;
+}
+
+/* Profile Information Section */
+.profile-info {
+    flex: 1;
+    max-width: 400px;
+}
+
+.rating-section {
+    margin-top: 10px;
+}
+
 .stars {
     display: flex;
     align-items: center;
@@ -365,4 +384,26 @@ footer {
 .empty-star {
     color: #ccc;
     font-size: 1.2rem;
+}
+
+/* Services Section */
+.services-section {
+    flex: 2;
+    max-width: 600px;
+}
+
+.service-list {
+    list-style: none;
+    padding: 0;
+}
+
+.service-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.service-list li span {
+    font-size: 1rem;
 }
