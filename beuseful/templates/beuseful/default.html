@@ -4,6 +4,13 @@
 
 {% block content %}
     <h1>Welcome to BUseful!</h1>
-    <p>Please log in to continue.</p>
-    <a href="{% url 'login' %}" class="button small" >Log In</a>
+    <h3>Please log in to continue</h3>
+    <a href="{% url 'login' %}" class="button" >Log In</a>
+
+    <h3>Don't have an account?</h3>
+    <a href="{% url 'create_profile_form' %}" class="button" >Register!</a>
+
+
+    <p>Find out more about who we are:</p>
+    <a href="{% url 'about' %}" class="button" >About Us</a>
 {% endblock %}

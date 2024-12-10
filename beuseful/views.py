@@ -81,7 +81,7 @@ class CreateProfileView(CreateView):
     template_name = 'beuseful/create_profile_form.html'
 
     def get_success_url(self):
-        return reverse('profile_list')
+        return reverse('activity_page')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -92,11 +92,15 @@ class CreateProfileView(CreateView):
     def post(self, request, *args, **kwargs):
         self.object = None
         user_form = UserCreationForm(self.request.POST)
-        profile_form = self.get_form()
+        profile_form = self.form_class(data=self.request.POST, files=self.request.FILES)
+
+        print("FILES Received:", self.request.FILES)  # Debug request.FILES
 
         if user_form.is_valid() and profile_form.is_valid():
             return self.form_valid(user_form, profile_form)
         else:
+            print("User Form Errors:", user_form.errors)
+            print("Profile Form Errors:", profile_form.errors)
             return self.form_invalid(user_form, profile_form)
 
     def form_valid(self, user_form, profile_form):
@@ -104,6 +108,8 @@ class CreateProfileView(CreateView):
         profile = profile_form.save(commit=False)
         profile.user = user
         profile.username = user.username
+        if 'profile_picture' in self.request.FILES:
+            profile.profile_picture = self.request.FILES['profile_picture']  # Explicitly save the file
         profile.save()
         login(self.request, user)
         return super().form_valid(profile_form)

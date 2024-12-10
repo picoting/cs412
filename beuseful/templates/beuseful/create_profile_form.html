@@ -4,7 +4,7 @@
 
 {% block content %}
 <h2>Create Profile</h2>
-<form method="post" action="{% url 'create_profile_form' %}">
+<form method="post" enctype="multipart/form-data" action="{% url 'create_profile_form' %}">
     {% csrf_token %}
     
     <!-- User Form Errors -->
