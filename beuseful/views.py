@@ -295,7 +295,7 @@ class DefaultView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('profile_list')
+            return redirect('activity_page')
         return super().get(request, *args, **kwargs)
 
 
@@ -383,3 +383,30 @@ class ViewReview(DetailView):
         context['buyer_to_seller_review'] = buyer_to_seller_review
         context['seller_to_buyer_review'] = seller_to_buyer_review
         return context
+
+#dashboard view
+def activity_page(request):
+    user_profile = request.user.profile
+
+    # Fetch recent orders (limit to 5 for brevity)
+    recent_orders = Order.objects.filter(buyer=user_profile).order_by('-date_ordered')[:5]
+
+    # Fetch recent reviews written by the user
+    recent_reviews = Review.objects.filter(reviewer=user_profile).order_by('-date')[:5]
+
+    # Fetch user's services if they are a seller
+    services = user_profile.services.all() if user_profile.is_seller else None
+
+    # Get average rating if the user is a seller
+    avg_rating = None
+    if user_profile.is_seller:
+        avg_rating = Review.objects.filter(reviewee=user_profile).aggregate(Avg('rating'))['rating__avg']
+
+    context = {
+        'recent_orders': recent_orders,
+        'recent_reviews': recent_reviews,
+        'services': services,
+        'avg_rating': avg_rating,
+        'is_seller': user_profile.is_seller,
+    }
+    return render(request, 'beuseful/activity_page.html', context)

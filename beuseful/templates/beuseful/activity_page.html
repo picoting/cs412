@@ -1,0 +1,76 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<h1>Welcome to Your Activity, {{ request.user.username }}!</h1>
+
+<!-- Recent Orders Section -->
+<div class="dashboard-section">
+    <h2>Recent Orders</h2>
+    {% if recent_orders %}
+        <ul>
+            {% for order in recent_orders %}
+                <li>
+                    <strong>{{ order.service.title }}</strong> - ${{ order.total_price }}
+                    <br>
+                    Status: {{ order.get_status_display }}
+                    <br>
+                    Ordered on: {{ order.date_ordered }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't placed any orders recently.</p>
+    {% endif %}
+</div>
+
+<!-- Recent Reviews Section -->
+<div class="dashboard-section">
+    <h2>Your Recent Reviews</h2>
+    {% if recent_reviews %}
+        <ul>
+            {% for review in recent_reviews %}
+                <li>
+                    <strong>Rating:</strong> {{ review.rating }}/5
+                    <br>
+                    <strong>Comment:</strong> {{ review.comment }}
+                    <br>
+                    <strong>Date:</strong> {{ review.date }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't written any reviews recently.</p>
+    {% endif %}
+</div>
+
+<!-- Seller Section -->
+{% if is_seller %}
+    <div class="dashboard-section">
+        <h2>Your Services</h2>
+        {% if services %}
+            <ul>
+                {% for service in services %}
+                    <li>
+                        <strong>{{ service.title }}</strong> - ${{ service.price }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You haven't created any services yet.</p>
+        {% endif %}
+
+        <p><strong>Average Rating:</strong> {{ avg_rating|default:"N/A" }}/5</p>
+
+        <div class="button-container">
+            <a href="{% url 'create_service' %}" class="button">Create a New Service</a>
+            <a href="{% url 'manage_orders' %}" class="button">Manage Orders</a>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Profile Section -->
+<div class="dashboard-section">
+    <h2>Your Profile</h2>
+    <a href="{% url 'profile_detail' username=request.user.profile.username %}" class="button">View Profile</a>
+</div>
+{% endblock %}
