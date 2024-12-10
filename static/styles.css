@@ -617,3 +617,50 @@ footer {
     object-fit: cover; /* Ensures the image fits well */
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-section select {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.service-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.service-card {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.service-card h3 {
+    margin-top: 0;
+}
+
+.service-card p {
+    margin: 5px 0;
+}
+
+.service-card .button {
+    display: inline-block;
+    margin-top: 10px;
+    background-color: #8e0e0e;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.service-card .button:hover {
+    background-color: #a31b1b;
+}

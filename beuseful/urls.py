@@ -29,4 +29,5 @@ urlpatterns = [
     path('profile/<str:username>/following/', views.FollowingListView.as_view(), name='following_list'),
     path('order/<int:pk>/view_review/', views.ViewReview.as_view(), name='view_review'),
     path('activity/', activity_page, name='activity_page'),
+    path('browse_services/', browse_services, name='browse_services')
 ]

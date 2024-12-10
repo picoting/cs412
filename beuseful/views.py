@@ -207,6 +207,25 @@ class CreateServiceView(CreateView):
             raise ValueError("Logged-in user does not have an associated profile or a valid username.")
         return reverse_lazy('profile_detail', kwargs={'username': self.request.user.profile.username})
 
+#browsing service view
+def browse_services(request):
+    # Get category filter from query parameters
+    category_filter = request.GET.get('category', None)
+    
+    # Fetch all services or filter by category
+    if category_filter:
+        services = Service.objects.filter(category=category_filter).order_by('-id')  # Sort by time (newest first)
+    else:
+        services = Service.objects.all().order_by('-id')  # Default sort by time
+    
+    # Pass categories to template for filtering options
+    categories = dict(Service.CATEGORY_CHOICES)
+
+    return render(request, 'beuseful/browse_services.html', {
+        'services': services,
+        'categories': categories,
+        'selected_category': category_filter,  # Keep track of current filter
+    })
 
 # ORDER VIEWS
 def place_order(request, service_id):

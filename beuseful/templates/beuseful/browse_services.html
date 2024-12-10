@@ -1,0 +1,45 @@
+{% extends 'beuseful/base.html' %}
+{% block title %}Browse Services{% endblock %}
+
+{% block content %}
+<h1>Browse Services</h1>
+
+<!-- Filter Section -->
+<div class="filter-section">
+    <form method="get" action="{% url 'browse_services' %}">
+        <label for="category">Filter by Category:</label>
+        <select name="category" id="category" onchange="this.form.submit()">
+            <option value="">All</option>
+            {% for key, value in categories.items %}
+                <option value="{{ key }}" {% if selected_category == key %}selected{% endif %}>
+                    {{ value }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+<!-- Service List -->
+<div class="service-list">
+    {% if services %}
+        <ul>
+            {% for service in services %}
+                <li class="service-card">
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.description|truncatechars:100 }}</p>
+                    <p><strong>Price:</strong> ${{ service.price }}</p>
+                    <p><strong>Category:</strong> {{ service.get_category_display }}</p>
+                    <p><strong>Seller:</strong> 
+                        <a href="{% url 'profile_detail' username=service.seller.username %}">
+                            {{ service.seller.username }}
+                        </a>
+                    </p>
+                    <a href="{% url 'place_order' service.id %}" class="button">View Service</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No services available for the selected category.</p>
+    {% endif %}
+</div>
+{% endblock %}
