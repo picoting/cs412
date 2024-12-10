@@ -248,11 +248,13 @@ def place_order(request, service_id):
 
 
 def manage_orders(request):
-    if not request.user.profile.is_seller:
-        messages.error(request, "Only sellers can manage orders.")
-        return redirect('profile_list')
+    orders = Order.objects.filter(seller=request.user.profile)
 
-    orders = Order.objects.filter(seller=request.user.profile).order_by('-date_ordered')
+    # Add a flag to check if the seller has reviewed the order
+    for order in orders:
+        seller_has_reviewed = order.reviews.filter(reviewer=request.user.profile).exists()
+        order.seller_has_reviewed = seller_has_reviewed  # Attach the flag to the order object
+
     return render(request, 'beuseful/manage_orders.html', {'orders': orders})
 
 
@@ -272,10 +274,13 @@ def update_order_status(request, order_id):
 
 #@login_required
 def my_orders(request):
-    """
-    View to display all orders placed by the logged-in user (buyer).
-    """
-    orders = Order.objects.filter(buyer=request.user.profile).order_by('-date_ordered')
+    orders = Order.objects.filter(buyer=request.user.profile)
+
+    # Add a flag for each order to check if the user has left a review
+    for order in orders:
+        user_has_reviewed = order.reviews.filter(reviewer=request.user.profile).exists()
+        order.user_has_reviewed = user_has_reviewed  # Attach the flag to the order object
+
     return render(request, 'beuseful/my_orders.html', {'orders': orders})
 
 

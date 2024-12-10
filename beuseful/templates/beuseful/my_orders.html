@@ -30,13 +30,15 @@
                 <td>{{ order.date_ordered }}</td>
                 <td>
                     {% if order.status == "Completed" %}
-                        {% if order.reviews.count > 0 %}
+                        {% if order.user_has_reviewed %}
                             <!-- View Review Button -->
                             <a href="{% url 'view_review' pk=order.id %}" class="button small">View Review</a>
                         {% else %}
                             <!-- Leave Review Button -->
                             <a href="{% url 'leave_review' order.id %}" class="button small">Leave Review</a>
                         {% endif %}
+                    {% else %}
+                        N/A
                     {% endif %}
                 </td>
             </tr>
