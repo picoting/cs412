@@ -107,21 +107,20 @@
                 <tbody>
                     {% for service in profile.services.all %}
                         <tr>
-                            <!-- Service Title -->
                             <td>
                                 {% if not is_own_profile %}
-                                    <a href="{% url 'place_order' service.id %}">
+                                    <a href="{% url 'place_order' service.id %}" class="service-title">
                                         {{ service.title }}
                                     </a>
                                 {% else %}
-                                    {{ service.title }}
+                                    <span class="service-title">
+                                        {{ service.title }}
+                                    </span>
                                 {% endif %}
                             </td>
                             
-                            <!-- Service Description -->
                             <td>{{ service.description|truncatechars:50 }}</td>
                             
-                            <!-- Service Price -->
                             <td>${{ service.price }}</td>
                         </tr>
                     {% endfor %}
