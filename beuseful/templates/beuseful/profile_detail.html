@@ -1,75 +1,94 @@
 {% extends 'beuseful/base.html' %}
 
 {% block content %}
-<h1>Profile: {{ profile.username }}</h1>
-<p><strong>Email:</strong> {{ profile.email }}</p>
-<p><strong>Is Seller:</strong> {{ profile.is_seller }}</p>
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-info">
+            <!-- Username and Rating on the Same Line -->
+            <div class="username-rating">
+                <h1>{{ profile.username }}</h1>
+                {% if profile.is_seller %}
+                    <div class="rating">
+                        <span class="stars">
+                            {% for star in seller_filled_stars %}
+                                <span class="filled-star">&#9733;</span>
+                            {% endfor %}
+                            {% for star in seller_empty_stars %}
+                                <span class="empty-star">&#9734;</span>
+                            {% endfor %}
+                        </span>
+                        <span>({{ seller_reviews.count }} seller review{{ seller_reviews.count|pluralize }})</span>
+                    </div>
+                {% endif %}
+                <div class="rating">
+                    <span class="stars">
+                        {% for star in buyer_filled_stars %}
+                            <span class="filled-star">&#9733;</span>
+                        {% endfor %}
+                        {% for star in buyer_empty_stars %}
+                            <span class="empty-star">&#9734;</span>
+                        {% endfor %}
+                    </span>
+                    <span>({{ buyer_reviews.count }} buyer review{{ buyer_reviews.count|pluralize }})</span>
+                </div>
+            </div>
 
-<!-- Followers/Following Info -->
-<p><strong>Followers:</strong> {{ profile.followers_count }}</p>
-<p><strong>Following:</strong> {{ profile.following_count }}</p>
-
-<!-- Follow/Unfollow Button -->
-{% if request.user.is_authenticated and not is_own_profile %}
-    <form action="{% url 'toggle_follow' profile.username %}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="button">
-            {% if is_following %}
-                Unfollow
-            {% else %}
-                Follow
-            {% endif %}
-        </button>
-    </form>
-{% endif %}
-
-{% if profile.is_seller %}
-    <p><strong>Seller Rating:</strong></p>
-    <div class="stars">
-        <!-- Render filled stars -->
-        {% for star in seller_filled_stars %}
-            <span class="filled-star">&#9733;</span>
-        {% endfor %}
-        <!-- Render empty stars -->
-        {% for star in seller_empty_stars %}
-            <span class="empty-star">&#9734;</span>
-        {% endfor %}
-        <span>({{ seller_reviews.count }} review{{ seller_reviews.count|pluralize }})</span>
+            <!-- Followers, Following, and Follow Button Horizontally Aligned -->
+            <div class="profile-stats-actions">
+                <div class="profile-stats">
+                    {% if is_own_profile %}
+                        <p>
+                            <a href="{% url 'follower_list' username=profile.username %}" class="stat-link">
+                                <span class="stat">{{ profile.followers_count }}</span> Followers
+                            </a>
+                        </p>
+                        <p>
+                            <a href="{% url 'following_list' username=profile.username %}" class="stat-link">
+                                <span class="stat">{{ profile.following_count }}</span> Following
+                            </a>
+                        </p>
+                    {% else %}
+                        <p>
+                            <span class="stat">{{ profile.followers_count }}</span> Followers
+                        </p>
+                        <p>
+                            <span class="stat">{{ profile.following_count }}</span> Following
+                        </p>
+                    {% endif %}
+                </div>
+                {% if request.user.is_authenticated and not is_own_profile %}
+                    <div class="follow-button">
+                        <form action="{% url 'toggle_follow' profile.username %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="button">
+                                {% if is_following %}
+                                    Unfollow
+                                {% else %}
+                                    Follow
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-{% endif %}
 
-<p><strong>Buyer Rating:</strong></p>
-<div class="stars">
-    <!-- Render filled stars -->
-    {% for star in buyer_filled_stars %}
-        <span class="filled-star">&#9733;</span>
-    {% endfor %}
-    <!-- Render empty stars -->
-    {% for star in buyer_empty_stars %}
-        <span class="empty-star">&#9734;</span>
-    {% endfor %}
-    <span>({{ buyer_reviews.count }} review{{ buyer_reviews.count|pluralize }})</span>
-</div>
-
-{% if profile.is_seller %}
-    <h2>Services</h2>
-    <ul>
-        {% for service in profile.services.all %}
-            <li>
-                <!-- Service name links to the place_order page -->
-                <a href="{% url 'place_order' service.id %}">{{ service.title }}</a> - ${{ service.price }}
-            </li>
-        {% endfor %}
-    </ul>
-
-    {% if is_own_profile %}
-    <div class="button-container">
-        <a href="{% url 'create_service' %}" class="button">Create a New Service</a>
-        <a href="{% url 'manage_orders' %}" class="button">Manage Orders</a>
-    </div>
+    <!-- Services Section -->
+    {% if profile.is_seller %}
+        <div class="services-section">
+            <h3>Services</h3>
+            <ul class="services-list">
+                {% for service in profile.services.all %}
+                    <li>
+                        <a href="{% url 'place_order' service.id %}">
+                            {{ service.title }}
+                        </a> - ${{ service.price }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
-    <div class="button-container">
-        <a href="{% url 'profile_list' %}" class="button">Back to Profiles</a>
-    </div>
-{% endif %}
+</div>
 {% endblock %}

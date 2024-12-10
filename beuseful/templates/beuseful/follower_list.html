@@ -1,0 +1,34 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<div class="header-section">
+<h1>{{ profile.username }}'s Followers</h1>
+<div class="button-container">
+    <a href="{% url 'profile_detail' username=profile.username %}" class="button">Back to Profile</a>
+</div>
+</div>
+
+<ul class="followers-list">
+    {% for data in follower_data %}
+        <li class="follower-card">
+            <a href="{% url 'profile_detail' username=data.follower.username %}" class="follower-username">
+                {{ data.follower.username }}
+            </a>
+            <div class="follower-actions">
+                {% if data.is_following %}
+                    <form action="{% url 'toggle_follow' username=data.follower.username %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="unfollow">Unfollow</button>
+                    </form>
+                {% else %}
+                    <form action="{% url 'toggle_follow' username=data.follower.username %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="follow">Follow</button>
+                    </form>
+                {% endif %}
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

@@ -12,5 +12,5 @@
     <button type="submit" class="button">Submit Review</button>
 </form>
 
-<a href="{% url 'profile' %}" class="button">Back to my Profile</a>
+<a href="{% url 'profile_detail' username=request.user.profile.username %}" class="button">Back to Profile</a>
 {% endblock %}

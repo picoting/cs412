@@ -1,0 +1,27 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<div class="header-section">
+    <h1>{{ profile.username }}'s Following</h1>
+    <div class="button-container">
+        <a href="{% url 'profile_detail' username=profile.username %}" class="button">Back to Profile</a>
+    </div>
+</div>
+<div class="following-list">
+    {% for following in following %}
+        <div class="following-card">
+            <div class="following-info">
+                <a href="{% url 'profile_detail' username=following.username %}" class="following-username">
+                    {{ following.username }}
+                </a>
+            </div>
+            <div class="following-actions">
+                <form action="{% url 'toggle_follow' following.username %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="button small unfollow">Unfollow</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

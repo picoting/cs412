@@ -25,4 +25,6 @@ urlpatterns = [
     path('about/', AboutPageView.as_view(), name='about'),
     path('order/<int:order_id>/review/', leave_review, name='leave_review'),
     path('profile/<str:username>/toggle_follow/', views.toggle_follow, name='toggle_follow'),
+    path('profile/<str:username>/followers/', views.FollowerListView.as_view(), name='follower_list'),
+    path('profile/<str:username>/following/', views.FollowingListView.as_view(), name='following_list'),
 ]

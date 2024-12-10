@@ -140,10 +140,6 @@ footer {
     align-items: center;
 }
 
-.nav-links li {
-    
-}
-
 .nav-links a,
 .nav-link-button {
     color: white;
@@ -352,22 +348,51 @@ footer {
 
 /* Container for Profile Details */
 .profile-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.profile-header {
+    text-align: center;
     margin-bottom: 20px;
 }
 
-/* Profile Information Section */
-.profile-info {
-    flex: 1;
-    max-width: 400px;
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
-.rating-section {
-    margin-top: 10px;
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
 }
+
+/* Profile Information Section */
+.profile-info h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+.profile-info .rating {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.stat-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.stat-link:hover {
+    text-decoration: underline;
+}
+
 
 .stars {
     display: flex;
@@ -387,10 +412,24 @@ footer {
 }
 
 /* Services Section */
-.services-section {
-    flex: 2;
-    max-width: 600px;
+.services-section ul {
+    list-style: none;
+    padding: 0;
 }
+
+.services-section li {
+    margin: 10px 0;
+}
+
+.service-link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.service-link:hover {
+    text-decoration: underline;
+}
+
 
 .service-list {
     list-style: none;
@@ -420,4 +459,89 @@ footer {
 
 #follow-button:hover {
     background-color: #a31b1b;
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 20px;
+}
+
+.header-section h1 {
+    font-size: 2rem;
+    color: #333;
+}
+
+/* List Layout */
+.followers-list, .following-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Cards */
+.follower-card, .following-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.follower-card:hover, .following-card:hover {
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Username Link */
+.follower-username, .following-username {
+    font-size: 1.2rem;
+    color: #8e0e0e;
+    text-decoration: none;
+}
+
+.follower-username:hover, .following-username:hover {
+    text-decoration: underline;
+}
+
+/* Action Buttons */
+.follower-actions, .following-actions {
+    margin-left: 10px;
+}
+
+.unfollow, .follow {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.unfollow {
+    background-color: #8e0e0e;
+    color: white;
+}
+
+.unfollow:hover {
+    background-color: #a31b1b;
+}
+
+.follow {
+    background-color: #007bff;
+    color: white;
+}
+
+.follow:hover {
+    background-color: #0056b3;
+}
+
+/* Back to Profile Button */
+.button-container {
+    margin-top: 20px;
+    text-align: center;
 }

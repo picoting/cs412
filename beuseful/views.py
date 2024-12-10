@@ -7,7 +7,7 @@ from django.contrib.auth import login
 from django.contrib import messages
 from django.db.models import Avg
 from math import floor
-from django.http import JsonResponse
+from django.core.exceptions import PermissionDenied
 
 from .models import Profile, Service, Order
 from .forms import *
@@ -112,7 +112,7 @@ class CreateProfileView(CreateView):
         context['form'] = profile_form
         return self.render_to_response(context)
 
-#follower/following vews
+#follower/following views
 def toggle_follow(request, username):
     target_profile = get_object_or_404(Profile, username=username)
 
@@ -130,6 +130,55 @@ def toggle_follow(request, username):
     # Redirect back to the profile detail view
     return redirect('profile_detail', username=username)
 
+class FollowerListView(ListView):
+    model = Profile
+    template_name = "beuseful/follower_list.html"
+    context_object_name = "followers"
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        profile = get_object_or_404(Profile, username=username)
+        
+        # Only allow the logged-in user to view their own followers
+        if profile != self.request.user.profile:
+            raise PermissionDenied("You are not authorized to view this page.")
+        
+        return profile.followers.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = self.request.user.profile  # Current user's profile
+
+        # Create a list of followers with their follow status
+        followers = self.get_queryset()
+        follower_data = [
+            {
+                'follower': follower,
+                'is_following': profile.following.filter(id=follower.id).exists()
+            }
+            for follower in followers
+        ]
+
+        context['profile'] = profile
+        context['follower_data'] = follower_data
+        return context
+
+class FollowingListView(ListView):
+    model = Profile
+    template_name = "beuseful/following_list.html"
+    context_object_name = "following"
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        profile = get_object_or_404(Profile, username=username)
+        if profile != self.request.user.profile:
+            raise PermissionDenied("You can only view your own following list.")
+        return profile.following.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.request.user.profile
+        return context
 
 # SERVICE VIEWS
 class CreateServiceView(CreateView):
