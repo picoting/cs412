@@ -1,3 +1,9 @@
+<!--
+Ting Liu
+tinglliu@bu.edu
+page for buyers to view their orders
+if the status of an order is complete, they can leave a review
+-->
 {% extends 'beuseful/base.html' %}
 
 {% block content %}
@@ -31,10 +37,10 @@
                 <td>
                     {% if order.status == "Completed" %}
                         {% if order.user_has_reviewed %}
-                            <!-- View Review Button -->
+                            <!-- view review button -->
                             <a href="{% url 'view_review' pk=order.id %}" class="button small">View Review</a>
                         {% else %}
-                            <!-- Leave Review Button -->
+                            <!-- leave review button -->
                             <a href="{% url 'leave_review' order.id %}" class="button small">Leave Review</a>
                         {% endif %}
                     {% else %}

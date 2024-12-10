@@ -1,11 +1,21 @@
+<!--
+Ting Liu
+tinglliu@bu.edu
+profile detail page... ok theres so much here.
+- display all profile info (user, bio, profile pic)
+- buyer/seller ratings
+- follower/following counts
+    - if viewing self profile, can click into and see the specific list
+- if not own profile, follow/unfollow button
+- list of services for a seller
 
+-->
 {% extends 'beuseful/base.html' %}
 {% load static %}
 {% block content %}
 <div class="profile-container">
-    <!-- Profile Header -->
     <div class="profile-header">
-        <!-- Profile Picture -->
+        <!-- profile pic -->
         <div class="profile-picture">
             {% if profile.profile_picture %}
                 <img src="{{ profile.profile_picture.url }}" alt="{{ profile.username }}'s Profile Picture">
@@ -14,9 +24,8 @@
             {% endif %}
         </div>
 
-        <!-- Profile Info -->
         <div class="profile-info">
-            <!-- Username and Rating on the Same Line -->
+            <!-- username and ratings -->
             <div class="username-rating">
                 <h1>{{ profile.username }}</h1>
                 {% if profile.is_seller %}
@@ -45,12 +54,12 @@
                 </div>
             </div>
 
-            <!-- Bio Section -->
+            <!-- bio -->
             <div class="profile-bio">
                 <p>{{ profile.bio|default:"This user hasn't written a bio yet." }}</p>
             </div>
 
-            <!-- Followers, Following, and Follow Button -->
+            <!-- follower/following counts, follow button -->
             <div class="profile-stats-actions">
                 <div class="profile-stats">
                     {% if is_own_profile %}
@@ -91,7 +100,7 @@
         </div>
     </div>
 
-    <!-- Services Section -->
+    <!-- services -->
     {% if profile.is_seller %}
     <div class="services-section">
         <h3>Services</h3>

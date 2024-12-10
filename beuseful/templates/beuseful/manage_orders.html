@@ -1,3 +1,10 @@
+<!--
+Ting Liu
+tinglliu@bu.edu
+page for sellers to manage their orders
+they can set the status of an order so the buyer can be updated
+once the order is completed, they can leave a review
+-->
 {% extends 'beuseful/base.html' %}
 
 {% block content %}
@@ -24,16 +31,16 @@
                 <td>${{ order.total_price }}</td>
                 <td>{{ order.get_status_display }}</td>
                 <td>
-                    <!-- Update button -->
+                    <!-- update button -->
                     <a href="{% url 'update_order_status' order.id %}" class="button small">Update</a>
                 </td>
                 <td>
                     {% if order.status == "Completed" %}
                         {% if order.seller_has_reviewed %}
-                            <!-- View Review Button -->
+                            <!-- view Review Button -->
                             <a href="{% url 'view_review' pk=order.id %}" class="button small">View Review</a>
                         {% else %}
-                            <!-- Leave Review Button -->
+                            <!-- leave Review Button -->
                             <a href="{% url 'leave_review' order.id %}" class="button small">Leave Review</a>
                         {% endif %}
                     {% else %}
