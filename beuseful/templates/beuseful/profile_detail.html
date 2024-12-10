@@ -77,18 +77,36 @@
 
     <!-- Services Section -->
     {% if profile.is_seller %}
-        <div class="services-section">
-            <h3>Services</h3>
+    <div class="services-section">
+        <h3>Services</h3>
+        {% if profile.services.all %}
             <ul class="services-list">
                 {% for service in profile.services.all %}
                     <li>
-                        <a href="{% url 'place_order' service.id %}">
+                        {% if not is_own_profile %}
+                            <!-- Link to Place Order page for other users -->
+                            <a href="{% url 'place_order' service.id %}">
+                                {{ service.title }}
+                            </a>
+                        {% else %}
+                            <!-- Show service title without link for own profile -->
                             {{ service.title }}
-                        </a> - ${{ service.price }}
+                        {% endif %}
+                        - ${{ service.price }}
                     </li>
                 {% endfor %}
             </ul>
-        </div>
-    {% endif %}
+        {% else %}
+            <p>No services available yet.</p>
+        {% endif %}
+
+        <!-- Add Service Button -->
+        {% if is_own_profile %}
+            <div class="button-container">
+                <a href="{% url 'create_service' %}" class="button">Add New Service</a>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
 </div>
 {% endblock %}
