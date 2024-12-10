@@ -23,7 +23,6 @@ class CreateServiceForm(forms.ModelForm):
     title = forms.CharField(label="Service Title", required=True)
     description = forms.CharField(widget=forms.Textarea, label="Service Description", required=True)
     price = forms.DecimalField(label="Price", required=True)
-    category = forms.CharField(label="Category", required=True)
 
     class Meta:
         model = Service
