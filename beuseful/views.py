@@ -7,6 +7,7 @@ from django.contrib.auth import login
 from django.contrib import messages
 from django.db.models import Avg
 from math import floor
+from django.http import JsonResponse
 
 from .models import Profile, Service, Order
 from .forms import *
@@ -39,11 +40,14 @@ class ProfileDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         profile = self.object
+        user_profile = self.request.user.profile if self.request.user.is_authenticated else None
 
-        context['is_own_profile'] = (
-        self.request.user.is_authenticated
-        and hasattr(self.request.user, 'profile')
-        and profile == self.request.user.profile
+        context['is_own_profile'] = user_profile == profile
+
+        context['is_following'] = (
+            user_profile.following.filter(id=profile.id).exists()
+            if user_profile and user_profile != profile
+            else False
         )
 
         # Calculate Seller Average Rating (if they are a seller)
@@ -107,6 +111,24 @@ class CreateProfileView(CreateView):
         context['user_form'] = user_form
         context['form'] = profile_form
         return self.render_to_response(context)
+
+#follower/following vews
+def toggle_follow(request, username):
+    target_profile = get_object_or_404(Profile, username=username)
+
+    if request.user.profile == target_profile:
+        # Prevent users from following themselves
+        return redirect('profile_detail', username=username)
+
+    if target_profile.followers.filter(id=request.user.profile.id).exists():
+        # If already following, unfollow
+        target_profile.followers.remove(request.user.profile)
+    else:
+        # If not following, follow
+        target_profile.followers.add(request.user.profile)
+
+    # Redirect back to the profile detail view
+    return redirect('profile_detail', username=username)
 
 
 # SERVICE VIEWS

@@ -407,3 +407,17 @@ footer {
 .service-list li span {
     font-size: 1rem;
 }
+
+#follow-button {
+    background-color: #8e0e0e;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#follow-button:hover {
+    background-color: #a31b1b;
+}

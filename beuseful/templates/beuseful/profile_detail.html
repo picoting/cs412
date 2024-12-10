@@ -5,6 +5,24 @@
 <p><strong>Email:</strong> {{ profile.email }}</p>
 <p><strong>Is Seller:</strong> {{ profile.is_seller }}</p>
 
+<!-- Followers/Following Info -->
+<p><strong>Followers:</strong> {{ profile.followers_count }}</p>
+<p><strong>Following:</strong> {{ profile.following_count }}</p>
+
+<!-- Follow/Unfollow Button -->
+{% if request.user.is_authenticated and not is_own_profile %}
+    <form action="{% url 'toggle_follow' profile.username %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button">
+            {% if is_following %}
+                Unfollow
+            {% else %}
+                Follow
+            {% endif %}
+        </button>
+    </form>
+{% endif %}
+
 {% if profile.is_seller %}
     <p><strong>Seller Rating:</strong></p>
     <div class="stars">

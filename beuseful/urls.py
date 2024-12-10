@@ -24,4 +24,5 @@ urlpatterns = [
     path('my_orders/', my_orders, name='my_orders'),
     path('about/', AboutPageView.as_view(), name='about'),
     path('order/<int:order_id>/review/', leave_review, name='leave_review'),
+    path('profile/<str:username>/toggle_follow/', views.toggle_follow, name='toggle_follow'),
 ]
