@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator
 
 """
 # Custom Profile model
@@ -12,12 +12,21 @@ class Profile(models.Model):
     def __str__(self):
         return self.username
 """
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     username = models.CharField(max_length=30, unique=True)
     email = models.EmailField(unique=True)
     is_seller = models.BooleanField(default=False)
     followers = models.ManyToManyField('self', symmetrical=False, related_name='following', blank=True)
+    bio = models.TextField(
+        max_length=500, 
+        blank=True, 
+        null=True,
+        validators=[MinLengthValidator(10)], 
+        help_text="Write a short bio about yourself (minimum 10 characters)."
+    )
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
     def __str__(self):
         return self.username
