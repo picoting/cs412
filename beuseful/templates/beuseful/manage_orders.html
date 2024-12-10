@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Manage Orders</h1>
-<table>
+<table class="orders-table">
     <thead>
         <tr>
             <th>Service</th>
@@ -22,11 +22,16 @@
             <td>${{ order.total_price }}</td>
             <td>{{ order.get_status_display }}</td>
             <td>
-                <a href="{% url 'update_order_status' order.id %}">Update</a>
+                <!-- Update button styled as per the rest of the website -->
+                <a href="{% url 'update_order_status' order.id %}" class="button small">Update</a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'profile_detail' username=request.user.profile.username %}">Back to Profile</a>
+
+<!-- Back to Profile Button -->
+<div class="button-container">
+    <a href="{% url 'profile_detail' username=request.user.profile.username %}" class="button">Back to Profile</a>
+</div>
 {% endblock %}
