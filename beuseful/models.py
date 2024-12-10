@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 """
 # Custom Profile model
 class Profile(models.Model):
@@ -60,7 +62,7 @@ class Review(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='reviews')
     reviewer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='given_reviews')
     reviewee = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='received_reviews')
-    rating = models.IntegerField()
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])  # ensure rating is 1-5
     comment = models.TextField(blank=True, null=True)
     date = models.DateField(auto_now_add=True)
 
