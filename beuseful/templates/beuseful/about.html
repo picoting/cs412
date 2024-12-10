@@ -23,9 +23,11 @@
             <li>Place orders and track their progress in real-time.</li>
         </ol>
     </p>
+    {% if not user.profile.is_seller %}
     <h2>Get Started Today</h2>
     <p>
         Ready to start collaborating with your peers? <a href="{% url 'create_profile_form' %}">Register here</a> and become a part of the BUseful community!
     </p>
+    {% endif %}
 </div>
 {% endblock %}

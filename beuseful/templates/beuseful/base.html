@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body>
-    <div class="page-container"> <!-- Wrap the content for flex layout -->
+    <div class="page-container">
         <header>
             <nav class="navbar">
                 <div class="nav-container">
-                    <!-- Logo -->
+                    <!-- logo -->
                     <a href="{% url 'about' %}" class="logo">BUseful</a>
-                    <!-- Primary Navigation Links -->
+                    <!-- primary nav -->
                     <ul class="nav-links">
                         {% if user.is_authenticated %}
                             {% if user.profile and user.profile.username %}
@@ -21,7 +21,7 @@
                             {% endif %}
                             <li><a href="{% url 'profile_list' %}">Profile List</a></li>
                             <li>
-                                <!-- Style the logout form to look like a nav link -->
+                                <!-- style log out form -->
                                 <form action="{% url 'logout' %}" method="POST" id="logout-form">
                                     {% csrf_token %}
                                     <button type="submit" class="nav-link-button">Logout</button>
@@ -36,7 +36,7 @@
                 </div>
             </nav>
 
-            <!-- Secondary Navbar for "My Orders" and "Manage Orders" -->
+            <!-- secondary nav got logged in users -->
             {% if user.is_authenticated %}
             <nav class="secondary-navbar">
                 <ul>

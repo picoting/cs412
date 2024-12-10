@@ -187,36 +187,57 @@ footer {
     margin-top: auto; /* Push footer to the bottom */
 }
 
+/* Primary Navbar */
+.navbar {
+    background-color: #8e0e0e;
+    color: white;
+    padding: 10px 20px; /* Ensure consistent padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Secondary Navbar */
 .secondary-navbar {
-    background-color: #f0f0f0; /* Light gray background */
+    background-color: #f0f0f0; /* Light gray */
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
-    padding: 10px 20px;
-}
-
-.secondary-navbar ul {
-    list-style: none;
+    padding: 10px 20px; /* Match the padding of the primary navbar */
     display: flex;
-    gap: 20px;
-    margin: 0;
-    padding: 0;
+    align-items: center;
+    justify-content: flex-start; /* Align content to the left */
+    gap: 20px; /* Add spacing between links */
 }
 
-.secondary-navbar li {
+/* Links inside Navbars */
+.nav-links, .secondary-navbar ul {
+    list-style: none;
+    margin: 0; /* Remove default margins */
+    padding: 0; /* Remove default padding */
+    display: flex;
+    gap: 20px; /* Add spacing between items */
+}
+
+.nav-links li, .secondary-navbar li {
     display: inline;
 }
 
-.secondary-navbar a {
+.nav-links a, .secondary-navbar a {
     text-decoration: none;
-    color: #333; /* Dark text color */
-    font-weight: bold;
+    color: white; /* Primary navbar links */
     font-size: 1rem;
+}
+
+.secondary-navbar a {
+    color: #333; /* Dark gray for secondary navbar */
+    font-weight: bold;
 }
 
 .secondary-navbar a:hover {
     text-decoration: underline;
 }
 
+/* Active link in secondary navbar */
 .secondary-navbar a.active {
     color: #8e0e0e; /* Highlight active link in dark red */
 }
