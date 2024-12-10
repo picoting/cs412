@@ -1,5 +1,5 @@
 {% extends 'beuseful/base.html' %}
-
+{% load static %}
 {% block content %}
 <div class="header-section">
 <h1>{{ profile.username }}'s Followers</h1>
@@ -11,6 +11,13 @@
 <ul class="followers-list">
     {% for data in follower_data %}
         <li class="follower-card">
+            <div class="follower-picture">
+                {% if data.follower.profile_picture %}
+                    <img src="{{ data.follower.profile_picture.url }}" alt="{{ data.follower.username }}'s profile picture">
+                {% else %}
+                    <img src="{% static 'default_profile_picture.png' %}" alt="Default profile picture">
+                {% endif %}
+            </div>
             <a href="{% url 'profile_detail' username=data.follower.username %}" class="follower-username">
                 {{ data.follower.username }}
             </a>
