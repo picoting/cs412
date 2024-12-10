@@ -52,7 +52,19 @@ class CreateOrderForm(forms.ModelForm):
     """
     class Meta:
         model = Order
-        fields = ['service', 'buyer', 'status', 'total_price']
+        fields = ['quantity', 'notes']  # Allow buyers to set only these fields
+        widgets = {
+            'quantity': forms.NumberInput(attrs={'min': 1}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
+
+class OrderUpdateForm(forms.ModelForm):
+    """
+    form to update an order status (for seller)
+    """
+    class Meta:
+        model = Order
+        fields = ['status']
 
 
 class CreateReviewForm(forms.ModelForm):

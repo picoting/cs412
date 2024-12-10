@@ -1,0 +1,33 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<h1>My Orders</h1>
+{% if orders %}
+    <table>
+        <thead>
+            <tr>
+                <th>Service</th>
+                <th>Seller</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Date Ordered</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.service.title }}</td>
+                <td><a href="{% url 'profile_detail' username=order.seller.username %}">{{ order.seller.username }}</a></td>
+                <td>{{ order.quantity }}</td>
+                <td>${{ order.total_price }}</td>
+                <td>{{ order.get_status_display }}</td>
+                <td>{{ order.date_ordered }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>You have not placed any orders.</p>
+{% endif %}
+{% endblock %}

@@ -13,7 +13,7 @@
                 <div class="nav-container">
                     <!-- Logo -->
                     <a href="{% url 'home' %}" class="logo">BUseful</a>
-                    <!-- Navigation Links -->
+                    <!-- Primary Navigation Links -->
                     <ul class="nav-links">
                         {% if user.is_authenticated %}
                             {% if user.profile and user.profile.username %}
@@ -34,6 +34,26 @@
                     </ul>
                 </div>
             </nav>
+
+            <!-- Secondary Navbar for "My Orders" and "Manage Orders" -->
+            {% if user.is_authenticated %}
+            <nav class="secondary-navbar">
+                <ul>
+                    <li>
+                        <a href="{% url 'my_orders' %}" class="{% if request.resolver_match.url_name == 'my_orders' %}active{% endif %}">
+                            My Orders
+                        </a>
+                    </li>
+                    {% if user.profile.is_seller %}
+                    <li>
+                        <a href="{% url 'manage_orders' %}" class="{% if request.resolver_match.url_name == 'manage_orders' %}active{% endif %}">
+                            Manage Orders
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
         </header>
         <main class="content">
             {% block content %}

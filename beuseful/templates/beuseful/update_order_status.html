@@ -1,0 +1,11 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<h1>Update Order Status</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update Status</button>
+</form>
+<a href="{% url 'manage_orders' %}">Back to Manage Orders</a>
+{% endblock %}

@@ -1,31 +1,27 @@
 {% extends 'beuseful/base.html' %}
 
 {% block content %}
-<div class="content">
-    <h1>Profile: {{ profile.username }}</h1>
-    <p><strong>Email:</strong> {{ profile.email }}</p>
-    <p><strong>Is Seller:</strong> {{ profile.is_seller }}</p>
+<h1>Profile: {{ profile.username }}</h1>
+<p><strong>Email:</strong> {{ profile.email }}</p>
+<p><strong>Is Seller:</strong> {{ profile.is_seller }}</p>
 
-    {% if profile.is_seller %}
-        <h2>Services</h2>
-        <ul>
-            {% for service in profile.services.all %}
-                <li>{{ service.title }} - ${{ service.price }}</li>
-            {% empty %}
-                <li>No services available</li>
-            {% endfor %}
-        </ul>
+{% if profile.is_seller %}
+    <h2>Services</h2>
+    <ul>
+        {% for service in profile.services.all %}
+            <li>
+                {{ service.title }} - ${{ service.price }}
+                {% if request.user.is_authenticated and not is_own_profile %}
+                    <a href="{% url 'place_order' service.id %}">Order This Service</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
 
-        <!-- Show "Create Service" option only if this is the logged-in user's profile -->
-        {% if is_own_profile %}
-            <div class="button-container">
-                <a href="{% url 'create_service' %}" class="button">Create a New Service</a>
-            </div>
-        {% endif %}
+    {% if is_own_profile %}
+        <a href="{% url 'create_service' %}">Create a New Service</a>
+        <a href="{% url 'manage_orders' %}">Manage Orders</a>
     {% endif %}
-
-    <div class="button-container">
-        <a href="{% url 'profile_list' %}" class="button">Back to Profiles</a>
-    </div>
-</div>
+{% endif %}
+<a href="{% url 'profile_list' %}">Back to Profiles</a>
 {% endblock %}

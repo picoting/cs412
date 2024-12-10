@@ -1,0 +1,11 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<h1>Order {{ service.title }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Place Order</button>
+</form>
+<a href="{% url 'profile_detail' username=service.seller.username %}">Back to Seller Profile</a>
+{% endblock %}
