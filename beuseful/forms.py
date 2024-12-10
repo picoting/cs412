@@ -1,10 +1,17 @@
+"""
+Ting Liu
+tinglliu@bu.edu
+django forms
+"""
+
 from django import forms
 from .models import Profile, Service, Order, Review
 
 
 class CreateProfileForm(forms.ModelForm):
     """
-    Form for creating a new User profile.
+    form for creating a new profile (1-to-1 with user)
+    gets email, is_seller, bio, and profile pic for the profile
     """
     #username = forms.CharField(label="Username", required=True)
     email = forms.EmailField(label="Email Address", required=True)
@@ -23,7 +30,8 @@ class CreateProfileForm(forms.ModelForm):
 
 class CreateServiceForm(forms.ModelForm):
     """
-    Form for creating a new Service.
+    form for creating a new service
+    for seller to input title, description, price (per unit), and category from a list`
     """
     title = forms.CharField(label="Service Title", required=True)
     description = forms.CharField(widget=forms.Textarea, label="Service Description", required=True)
@@ -36,7 +44,7 @@ class CreateServiceForm(forms.ModelForm):
 
 class UpdateUserProfileForm(forms.ModelForm):
     """
-    Form for updating an existing User's profile.
+    update profile form, can modify email/seller status
     """
     class Meta:
         model = Profile
@@ -52,11 +60,11 @@ class UpdateUserProfileForm(forms.ModelForm):
 
 class CreateOrderForm(forms.ModelForm):
     """
-    Form for creating a new Order.
+    form for buyer to place order (quantity/order notes)
     """
     class Meta:
         model = Order
-        fields = ['quantity', 'notes']  # Allow buyers to set only these fields
+        fields = ['quantity', 'notes']  # buyers can only set these fields
         widgets = {
             'quantity': forms.NumberInput(attrs={'min': 1}),
             'notes': forms.Textarea(attrs={'rows': 3}),
@@ -72,6 +80,9 @@ class OrderUpdateForm(forms.ModelForm):
 
 
 class CreateReviewForm(forms.ModelForm):
+    """
+    form to create a review (either from seller to buyer or buyer to seller)
+    """
     class Meta:
         model = Review
         fields = ['rating', 'comment']

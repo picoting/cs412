@@ -1,3 +1,8 @@
+"""
+Ting Liu
+tinglliu@bu.edu
+urls for beuseful
+"""
 # quotes/urls.py
 from django.urls import path, include
 from django.conf import settings

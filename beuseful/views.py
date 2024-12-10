@@ -1,3 +1,8 @@
+"""
+Ting Liu
+tinglliu@bu.edu
+views for buseful
+""" 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from django.urls import reverse, reverse_lazy
@@ -17,6 +22,9 @@ from django.http import HttpResponse
 
 # PROFILE VIEWS
 class ProfileListView(ListView):
+    """
+    list of all the existing profiles
+    """
     model = Profile
     template_name = 'beuseful/profile_list.html'
     context_object_name = 'profiles'
@@ -29,13 +37,16 @@ class ProfileListView(ListView):
 
 
 class ProfileDetailView(DetailView):
+    """
+    detailed view of a specific profile
+    """
     model = Profile
     template_name = "beuseful/profile_detail.html"
     context_object_name = "profile"
 
     def get_object(self, queryset=None):
         username = self.kwargs.get('username')
-        if not username:
+        if not username: #i was getting an issue w reverse for empty username
             raise ValueError("The 'username' parameter is missing.")
         return get_object_or_404(Profile, username=username)
 
@@ -44,30 +55,31 @@ class ProfileDetailView(DetailView):
         profile = self.object
         user_profile = self.request.user.profile if self.request.user.is_authenticated else None
 
-        context['is_own_profile'] = user_profile == profile
+        context['is_own_profile'] = user_profile == profile #you can only view your own follower/following lists
 
-        context['is_following'] = (
+        context['is_following'] = ( #check if logged in user follows the profile
             user_profile.following.filter(id=profile.id).exists()
             if user_profile and user_profile != profile
             else False
         )
 
-        # Calculate Seller Average Rating (if they are a seller)
+        # seller average off of reviews (if they are a seller )
         seller_reviews = profile.received_reviews.filter(order__service__seller=profile)
         seller_avg_rating = seller_reviews.aggregate(Avg('rating'))['rating__avg'] or 0
 
-        # Calculate Buyer Average Rating
+        # buyer average (all profiles have this)
         buyer_reviews = profile.received_reviews.filter(order__buyer=profile)
         buyer_avg_rating = buyer_reviews.aggregate(Avg('rating'))['rating__avg'] or 0
 
-        # Add star information to the context
+        # add the number of stars that need to filled out of 5 for the rating lol
         context['seller_avg_rating'] = seller_avg_rating
-        context['seller_filled_stars'] = range(floor(seller_avg_rating))  # Whole stars
-        context['seller_empty_stars'] = range(5 - floor(seller_avg_rating))  # Remaining stars
+        context['seller_filled_stars'] = range(floor(seller_avg_rating))  # filled
+        context['seller_empty_stars'] = range(5 - floor(seller_avg_rating))  # empty
 
+        #same thing for buyer
         context['buyer_avg_rating'] = buyer_avg_rating
-        context['buyer_filled_stars'] = range(floor(buyer_avg_rating))  # Whole stars
-        context['buyer_empty_stars'] = range(5 - floor(buyer_avg_rating))  # Remaining stars
+        context['buyer_filled_stars'] = range(floor(buyer_avg_rating))
+        context['buyer_empty_stars'] = range(5 - floor(buyer_avg_rating))
 
         context['seller_reviews'] = seller_reviews
         context['buyer_reviews'] = buyer_reviews
@@ -76,6 +88,9 @@ class ProfileDetailView(DetailView):
 
 
 class CreateProfileView(CreateView):
+    """
+    view for making a new profile
+    """
     model = Profile
     form_class = CreateProfileForm
     template_name = 'beuseful/create_profile_form.html'
@@ -91,7 +106,7 @@ class CreateProfileView(CreateView):
 
     def post(self, request, *args, **kwargs):
         self.object = None
-        user_form = UserCreationForm(self.request.POST)
+        user_form = UserCreationForm(self.request.POST) #take the user create form
         profile_form = self.form_class(data=self.request.POST, files=self.request.FILES)
 
         print("FILES Received:", self.request.FILES)  # Debug request.FILES
@@ -107,9 +122,9 @@ class CreateProfileView(CreateView):
         user = user_form.save()
         profile = profile_form.save(commit=False)
         profile.user = user
-        profile.username = user.username
+        profile.username = user.username #profile username is the same as user username (1-to-1)
         if 'profile_picture' in self.request.FILES:
-            profile.profile_picture = self.request.FILES['profile_picture']  # Explicitly save the file
+            profile.profile_picture = self.request.FILES['profile_picture']  # explicitly save the file? dk if i need this but
         profile.save()
         login(self.request, user)
         return super().form_valid(profile_form)
@@ -125,20 +140,23 @@ def toggle_follow(request, username):
     target_profile = get_object_or_404(Profile, username=username)
 
     if request.user.profile == target_profile:
-        # Prevent users from following themselves
+        # prevent users from following themselves
         return redirect('profile_detail', username=username)
 
     if target_profile.followers.filter(id=request.user.profile.id).exists():
-        # If already following, unfollow
+        # have the unfollow for following
         target_profile.followers.remove(request.user.profile)
     else:
-        # If not following, follow
+        # follow option for followers that you dont follow
         target_profile.followers.add(request.user.profile)
 
-    # Redirect back to the profile detail view
+    # go back to profile view
     return redirect('profile_detail', username=username)
 
 class FollowerListView(ListView):
+    """
+    view to show followers
+    """
     model = Profile
     template_name = "beuseful/follower_list.html"
     context_object_name = "followers"
@@ -147,7 +165,7 @@ class FollowerListView(ListView):
         username = self.kwargs['username']
         profile = get_object_or_404(Profile, username=username)
         
-        # Only allow the logged-in user to view their own followers
+        # only allow the logged-in user to view their own followers
         if profile != self.request.user.profile:
             raise PermissionDenied("You are not authorized to view this page.")
         
@@ -155,9 +173,9 @@ class FollowerListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        profile = self.request.user.profile  # Current user's profile
+        profile = self.request.user.profile  # current logged in user
 
-        # Create a list of followers with their follow status
+        # list of their followers
         followers = self.get_queryset()
         follower_data = [
             {
@@ -172,6 +190,9 @@ class FollowerListView(ListView):
         return context
 
 class FollowingListView(ListView):
+    """
+    view to show following
+    """
     model = Profile
     template_name = "beuseful/following_list.html"
     context_object_name = "following"
@@ -190,6 +211,9 @@ class FollowingListView(ListView):
 
 # SERVICE VIEWS
 class CreateServiceView(CreateView):
+    """
+    view for seller to create a new service
+    """
     model = Service
     form_class = CreateServiceForm
     template_name = 'beuseful/create_service.html'
@@ -209,26 +233,29 @@ class CreateServiceView(CreateView):
 
 #browsing service view
 def browse_services(request):
-    # Get category filter from query parameters
+    # get category filter from query parameters
     category_filter = request.GET.get('category', None)
     
-    # Fetch all services or filter by category
+    # fetch all services or filter by category
     if category_filter:
-        services = Service.objects.filter(category=category_filter).order_by('-id')  # Sort by time (newest first)
+        services = Service.objects.filter(category=category_filter).order_by('-id')  # sort by time (newest first)
     else:
-        services = Service.objects.all().order_by('-id')  # Default sort by time
+        services = Service.objects.all().order_by('-id')  # default sort by time
     
-    # Pass categories to template for filtering options
+    # pass categories to template for filtering options
     categories = dict(Service.CATEGORY_CHOICES)
 
     return render(request, 'beuseful/browse_services.html', {
         'services': services,
         'categories': categories,
-        'selected_category': category_filter,  # Keep track of current filter
+        'selected_category': category_filter,  # keep track of current filter
     })
 
 # ORDER VIEWS
 def place_order(request, service_id):
+    """
+    view for buyer to place a new order
+    """
     service = get_object_or_404(Service, id=service_id)
     
     if request.method == "POST":
@@ -248,9 +275,12 @@ def place_order(request, service_id):
 
 
 def manage_orders(request):
+    """
+    view for sellers to see/manage all of their recieved orders
+    """
     orders = Order.objects.filter(seller=request.user.profile)
 
-    # Add a flag to check if the seller has reviewed the order
+    # add a flag to check if the seller has reviewed the order
     for order in orders:
         seller_has_reviewed = order.reviews.filter(reviewer=request.user.profile).exists()
         order.seller_has_reviewed = seller_has_reviewed  # Attach the flag to the order object
@@ -259,6 +289,9 @@ def manage_orders(request):
 
 
 def update_order_status(request, order_id):
+    """
+    seller can update the status of a single order
+    """
     order = get_object_or_404(Order, id=order_id, seller=request.user.profile)
     
     if request.method == "POST":
@@ -274,9 +307,12 @@ def update_order_status(request, order_id):
 
 #@login_required
 def my_orders(request):
+    """
+    view for buyer to see tthe status of all their placed orders
+    """
     orders = Order.objects.filter(buyer=request.user.profile)
 
-    # Add a flag for each order to check if the user has left a review
+    # add a flag for each order to check if the user has left a review
     for order in orders:
         user_has_reviewed = order.reviews.filter(reviewer=request.user.profile).exists()
         order.user_has_reviewed = user_has_reviewed  # Attach the flag to the order object
@@ -285,19 +321,22 @@ def my_orders(request):
 
 
 def leave_review(request, order_id):
+    """
+    view for either party to leave a review regarding an order
+    """
     order = get_object_or_404(Order, id=order_id)
 
-    # Ensure the order is completed
+    # ensure the order is completed
     if order.status != "Completed":
         messages.error(request, "You can only leave a review for completed orders.")
         return redirect('my_orders')
 
-    # Ensure the logged-in user is the buyer or seller of the order
+    # ensure the logged-in user is the buyer or seller of the order
     if request.user.profile not in [order.buyer, order.service.seller]:
         messages.error(request, "You are not authorized to review this order.")
         return redirect('my_orders')
 
-    # Prevent duplicate reviews for the same order and user
+    # prevent duplicate reviews for the same order and user
     existing_review = Review.objects.filter(order=order, reviewer=request.user.profile).first()
     if existing_review:
         messages.error(request, "You have already left a review for this order.")
@@ -321,6 +360,9 @@ def leave_review(request, order_id):
 
 # DEFAULT VIEW
 class DefaultView(TemplateView):
+    """
+    default view for non oauth-ed users... redirects to my activty for logged in users
+    """
     template_name = 'beuseful/default.html'
 
     def get(self, request, *args, **kwargs):
@@ -339,19 +381,22 @@ class AboutPageView(TemplateView):
 
 #ORDERS VIEWS/CLASSES
 class MyOrdersView(ListView):
+    """
+    view for getting the list of orders a buyer as made
+    """
     model = Order
     template_name = 'beuseful/my_orders.html'
     context_object_name = 'orders'
 
     def get_queryset(self):
-        # Fetch orders where the logged-in user is the buyer
+        # fetch orders where the logged-in user is the buyer
         return Order.objects.filter(buyer=self.request.user.profile)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         orders = self.get_queryset()
 
-        # Add a flag to each order indicating if the user has left a review
+        # add a flag to each order indicating if the user has left a review
         for order in orders:
             order.user_has_reviewed = order.reviews.filter(reviewer=self.request.user.profile).exists()
 
@@ -359,19 +404,22 @@ class MyOrdersView(ListView):
         return context
     
 class ManageOrdersView(ListView):
+    """
+    view for getting the list of orders a seller has recieved
+    """
     model = Order
     template_name = 'beuseful/manage_orders.html'
     context_object_name = 'orders'
 
     def get_queryset(self):
-        # Fetch orders for the services provided by the logged-in seller
+        # fetch orders for the services provided by the logged-in seller
         return Order.objects.filter(service__seller=self.request.user.profile)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         orders = self.get_queryset()
 
-        # Add a flag to each order indicating if the seller has left a review
+        # add a flag to each order indicating if the seller has left a review
         for order in orders:
             order.user_has_reviewed = order.reviews.filter(reviewer=self.request.user.profile).exists()
 
@@ -379,8 +427,10 @@ class ManageOrdersView(ListView):
         return context
 
 #REVIEW VIEWS
-
 class ViewReview(DetailView):
+    """
+    view for clicking into a reviewed order and seeing the order detail + reviews left
+    """
     model = Order
     template_name = "beuseful/view_review.html"
     context_object_name = "order"
@@ -390,7 +440,7 @@ class ViewReview(DetailView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
-        order = get_object_or_404(Order, pk=self.kwargs['pk'])
+        order = get_object_or_404(Order, pk=self.kwargs['pk'  ])
         print(f"Retrieved Order: {order}")
         return order
 
@@ -398,7 +448,7 @@ class ViewReview(DetailView):
         context = super().get_context_data(**kwargs)
         order = self.object
 
-        # Fetch the review for this order (assuming one review per order)
+        # fetch the review for this order 
         review = order.reviews.first()
         context['review'] = review
 
@@ -406,7 +456,7 @@ class ViewReview(DetailView):
         context = super().get_context_data(**kwargs)
         order = self.object
 
-        # Fetch reviews
+        # fetch reviews
         buyer_to_seller_review = order.reviews.filter(reviewer=order.buyer).first()
         seller_to_buyer_review = order.reviews.filter(reviewer=order.seller).first()
 
@@ -416,18 +466,21 @@ class ViewReview(DetailView):
 
 #dashboard view
 def activity_page(request):
+    """
+    view for personal activity page
+    """
     user_profile = request.user.profile
 
-    # Fetch recent orders (limit to 5 for brevity)
+    # fetch recent orders (limit to 5 for brevity)
     recent_orders = Order.objects.filter(buyer=user_profile).order_by('-date_ordered')[:5]
 
-    # Fetch recent reviews written by the user
+    # fetch recent reviews written by the user
     recent_reviews = Review.objects.filter(reviewer=user_profile).order_by('-date')[:5]
 
-    # Fetch user's services if they are a seller
+    # fetch user's services if they are a seller
     services = user_profile.services.all() if user_profile.is_seller else None
 
-    # Get average rating if the user is a seller
+    # get average rating if the user is a seller
     avg_rating = None
     if user_profile.is_seller:
         avg_rating = Review.objects.filter(reviewee=user_profile).aggregate(Avg('rating'))['rating__avg']

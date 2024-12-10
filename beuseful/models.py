@@ -1,3 +1,8 @@
+"""
+Ting Liu
+tinglliu@bu.edu
+data models for buseful
+"""
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator
@@ -14,6 +19,9 @@ class Profile(models.Model):
 """
 
 class Profile(models.Model):
+    """
+    profile model, one-to-one with django user
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     username = models.CharField(max_length=30, unique=True)
     email = models.EmailField(unique=True)
@@ -39,6 +47,9 @@ class Profile(models.Model):
 
 # Service model
 class Service(models.Model):
+    """
+    service model, has a preset list of possible service categories
+    """
     CATEGORY_CHOICES = [
         ('Arts', 'Arts'),
         ('Technology', 'Technology'),
@@ -58,8 +69,11 @@ class Service(models.Model):
     def __str__(self):
         return f"{self.title} by {self.seller.username}"
 
-# Order model
 class Order(models.Model):
+    """
+    order, contains fields for both the seller/buyer
+    preset list of order statuses for the seller to update
+    """
     STATUS_CHOICES = [
         ("Pending", "Pending"),
         ("In Progress", "In Progress"),
@@ -76,15 +90,17 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def save(self, *args, **kwargs):
-        # Automatically calculate total price
+        #calculates the total cost of the order based on quantity
         self.total_price = self.service.price * self.quantity
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Order by {self.buyer.username} for {self.service.title}"
 
-# Review model
 class Review(models.Model):
+    """
+    review model, has 2 way reltionship between reviewer and reviewee
+    """
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='reviews')
     reviewer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='given_reviews')
     reviewee = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='received_reviews')
