@@ -1,0 +1,46 @@
+{% extends 'beuseful/base.html' %}
+
+{% block content %}
+<h1>Review for Order #{{ order.id }}</h1>
+
+<div class="order-details">
+    <p><strong>Service:</strong> {{ order.service.title }}</p>
+    <p><strong>Buyer:</strong> {{ order.buyer.username }}</p>
+    <p><strong>Seller:</strong> {{ order.seller.username }}</p>
+    <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+    <p><strong>Total Price:</strong> ${{ order.total_price }}</p>
+    <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+    <p><strong>Date Ordered:</strong> {{ order.date_ordered }}</p>
+</div>
+
+<div class="review-section">
+    <!-- Buyer to Seller Review -->
+    <div class="buyer-to-seller-review">
+        <h2>Buyer’s Review of Seller</h2>
+        {% if buyer_to_seller_review %}
+            <p><strong>Rating:</strong> {{ buyer_to_seller_review.rating }}/5</p>
+            <p><strong>Comment:</strong> {{ buyer_to_seller_review.comment }}</p>
+            <p><strong>Date:</strong> {{ buyer_to_seller_review.date }}</p>
+        {% else %}
+            <p>No review from the buyer for this order.</p>
+        {% endif %}
+    </div>
+
+    <!-- Seller to Buyer Review -->
+    <div class="seller-to-buyer-review">
+        <h2>Seller’s Review of Buyer</h2>
+        {% if seller_to_buyer_review %}
+            <p><strong>Rating:</strong> {{ seller_to_buyer_review.rating }}/5</p>
+            <p><strong>Comment:</strong> {{ seller_to_buyer_review.comment }}</p>
+            <p><strong>Date:</strong> {{ seller_to_buyer_review.date }}</p>
+        {% else %}
+            <p>No review from the seller for this order.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Back Button -->
+<div class="button-container">
+    <a href="{% url 'manage_orders' %}" class="button">Back to Orders</a>
+</div>
+{% endblock %}

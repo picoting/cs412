@@ -12,6 +12,8 @@ from django.core.exceptions import PermissionDenied
 from .models import Profile, Service, Order
 from .forms import *
 
+from django.http import HttpResponse
+
 
 # PROFILE VIEWS
 class ProfileListView(ListView):
@@ -344,4 +346,40 @@ class ManageOrdersView(ListView):
             order.user_has_reviewed = order.reviews.filter(reviewer=self.request.user.profile).exists()
 
         context['orders'] = orders
+        return context
+
+#REVIEW VIEWS
+
+class ViewReview(DetailView):
+    model = Order
+    template_name = "beuseful/view_review.html"
+    context_object_name = "order"
+
+    def dispatch(self, request, *args, **kwargs):
+        print(f"Accessing ViewReview: {request.path}")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self):
+        order = get_object_or_404(Order, pk=self.kwargs['pk'])
+        print(f"Retrieved Order: {order}")
+        return order
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order = self.object
+
+        # Fetch the review for this order (assuming one review per order)
+        review = order.reviews.first()
+        context['review'] = review
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order = self.object
+
+        # Fetch reviews
+        buyer_to_seller_review = order.reviews.filter(reviewer=order.buyer).first()
+        seller_to_buyer_review = order.reviews.filter(reviewer=order.seller).first()
+
+        context['buyer_to_seller_review'] = buyer_to_seller_review
+        context['seller_to_buyer_review'] = seller_to_buyer_review
         return context
