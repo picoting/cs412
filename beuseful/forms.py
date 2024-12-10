@@ -8,12 +8,17 @@ class CreateProfileForm(forms.ModelForm):
     """
     #username = forms.CharField(label="Username", required=True)
     email = forms.EmailField(label="Email Address", required=True)
-    #password = forms.CharField(widget=forms.PasswordInput, label="Password", required=True)
     is_seller = forms.BooleanField(label="Are you a seller?", required=False)
 
     class Meta:
         model = Profile
-        fields = ['email', 'is_seller']
+        fields = ['email', 'is_seller', 'bio', 'profile_picture']
+        widgets = {
+            'bio': forms.Textarea(attrs={
+                'rows': 3, 
+                'placeholder': 'Tell us a little about yourself...'
+            }),
+        }
 
 
 class CreateServiceForm(forms.ModelForm):
