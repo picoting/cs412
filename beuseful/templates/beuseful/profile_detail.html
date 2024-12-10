@@ -1,9 +1,20 @@
-{% extends 'beuseful/base.html' %}
 
+{% extends 'beuseful/base.html' %}
+{% load static %}
 {% block content %}
 <div class="profile-container">
     <!-- Profile Header -->
     <div class="profile-header">
+        <!-- Profile Picture -->
+        <div class="profile-picture">
+            {% if profile.profile_picture %}
+                <img src="{{ profile.profile_picture.url }}" alt="{{ profile.username }}'s Profile Picture">
+            {% else %}
+                <img src="{% static 'default_profile_picture.png' %}" alt="Default Profile Picture">
+            {% endif %}
+        </div>
+
+        <!-- Profile Info -->
         <div class="profile-info">
             <!-- Username and Rating on the Same Line -->
             <div class="username-rating">
@@ -34,7 +45,12 @@
                 </div>
             </div>
 
-            <!-- Followers, Following, and Follow Button Horizontally Aligned -->
+            <!-- Bio Section -->
+            <div class="profile-bio">
+                <p>{{ profile.bio|default:"This user hasn't written a bio yet." }}</p>
+            </div>
+
+            <!-- Followers, Following, and Follow Button -->
             <div class="profile-stats-actions">
                 <div class="profile-stats">
                     {% if is_own_profile %}
@@ -84,12 +100,10 @@
                 {% for service in profile.services.all %}
                     <li>
                         {% if not is_own_profile %}
-                            <!-- Link to Place Order page for other users -->
                             <a href="{% url 'place_order' service.id %}">
                                 {{ service.title }}
                             </a>
                         {% else %}
-                            <!-- Show service title without link for own profile -->
                             {{ service.title }}
                         {% endif %}
                         - ${{ service.price }}
@@ -100,13 +114,12 @@
             <p>No services available yet.</p>
         {% endif %}
 
-        <!-- Add Service Button -->
         {% if is_own_profile %}
             <div class="button-container">
                 <a href="{% url 'create_service' %}" class="button">Add New Service</a>
             </div>
         {% endif %}
     </div>
-{% endif %}
+    {% endif %}
 </div>
 {% endblock %}

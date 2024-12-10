@@ -586,3 +586,26 @@ footer {
 .button:hover {
     background-color: #a31b1b;
 }
+
+/* Profile Container */
+.profile-container {
+    text-align: center;
+    margin: 20px;
+}
+
+/* Profile Picture */
+.profile-picture img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover; /* Ensures the image is cropped to fit */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+
+/* Bio Section */
+.profile-bio {
+    font-size: 1.1rem;
+    color: #555;
+    margin-top: 15px;
+}
