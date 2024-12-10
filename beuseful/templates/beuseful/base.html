@@ -19,7 +19,7 @@
                             {% if user.profile and user.profile.username %}
                                 <li><a href="{% url 'profile_detail' username=user.profile.username %}">My Profile</a></li>
                             {% endif %}
-                            <li><a href="{% url 'profile_list' %}">Profile List</a></li>
+                            <li><a href="{% url 'activity_page' %}">My Activity</a></li>
                             <li>
                                 <!-- style log out form -->
                                 <form action="{% url 'logout' %}" method="POST" id="logout-form">
