@@ -19,25 +19,42 @@
     </form>
 </div>
 
-<!-- Service List -->
-<div class="service-list">
+<!-- Service Table -->
+<div class="service-table">
     {% if services %}
-        <ul>
-            {% for service in services %}
-                <li class="service-card">
-                    <h3>{{ service.title }}</h3>
-                    <p>{{ service.description|truncatechars:100 }}</p>
-                    <p><strong>Price:</strong> ${{ service.price }}</p>
-                    <p><strong>Category:</strong> {{ service.get_category_display }}</p>
-                    <p><strong>Seller:</strong> 
-                        <a href="{% url 'profile_detail' username=service.seller.username %}">
-                            {{ service.seller.username }}
-                        </a>
-                    </p>
-                    <a href="{% url 'place_order' service.id %}" class="button">View Service</a>
-                </li>
-            {% endfor %}
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Seller</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in services %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'place_order' service.id %}">{{ service.title }}</a>
+                        </td>
+
+                        <td>{{ service.description|truncatechars:50 }}</td>
+
+                        <td>${{ service.price }}</td>
+   
+                        <td>{{ service.get_category_display }}</td>
+    
+                        <td>
+                            <a href="{% url 'profile_detail' username=service.seller.username %}">
+                                {{ service.seller.username }}
+                            </a>
+                        </td>
+                        
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% else %}
         <p>No services available for the selected category.</p>
     {% endif %}
